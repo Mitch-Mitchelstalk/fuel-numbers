@@ -16,6 +16,8 @@ import {
   calculateTotalSavings,
   isDispensedMoreThanTotal,
   isOverClaimed,
+  parseNumberInput,
+  formatNumberInput,
   formatNumber,
   formatCurrency
 } from './calculator.js';
@@ -55,6 +57,30 @@ const state = {
   theftPercent: RATES.theft.medium * 100
 };
 
+/**
+ * Add thousands separator formatting to an input field
+ * @param {HTMLInputElement} input - The input element
+ * @param {boolean} isInteger - Whether to format as integer (default true)
+ */
+function addThousandsSeparator(input, isInteger = true) {
+  input.addEventListener('blur', () => {
+    if (!input.value) return;
+    const num = parseNumberInput(input.value);
+    if (num !== null && isInteger) {
+      input.value = formatNumberInput(num);
+    }
+  });
+  
+  input.addEventListener('focus', () => {
+    if (!input.value) return;
+    // Strip commas on focus for easier editing
+    const num = parseNumberInput(input.value);
+    if (num !== null) {
+      input.value = isInteger ? Math.round(num) : num;
+    }
+  });
+}
+
 // Initialize app
 function init() {
   setupFuelFields();
@@ -62,6 +88,7 @@ function init() {
   setupAdminFields();
   setupOperatorFields();
   setupTheftFields();
+  setupThousandsSeparators();
   
   // Initial calculation
   updateAllCalculations();
@@ -79,7 +106,7 @@ function setupFuelFields() {
   
   // Litres inputs
   litresWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'litres';
       state.fuelLitresYear = convertFuelUsage(value, 'week', 'year');
@@ -89,7 +116,7 @@ function setupFuelFields() {
   });
   
   litresMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'litres';
       state.fuelLitresYear = convertFuelUsage(value, 'month', 'year');
@@ -99,7 +126,7 @@ function setupFuelFields() {
   });
   
   litresYear.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'litres';
       state.fuelLitresYear = value;
@@ -110,7 +137,7 @@ function setupFuelFields() {
   
   // Dollars inputs
   dollarsWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'dollars';
       const litres = dollarsToLitres(value, state.dieselPrice);
@@ -121,7 +148,7 @@ function setupFuelFields() {
   });
   
   dollarsMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'dollars';
       const litres = dollarsToLitres(value, state.dieselPrice);
@@ -132,7 +159,7 @@ function setupFuelFields() {
   });
   
   dollarsYear.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.lastEnteredType = 'dollars';
       const litres = dollarsToLitres(value, state.dieselPrice);
@@ -144,7 +171,7 @@ function setupFuelFields() {
   
   // Diesel price - smart behavior
   dieselPrice.addEventListener('input', (e) => {
-    const newPrice = parseFloat(e.target.value) || RATES.defaultDiesel;
+    const newPrice = parseNumberInput(e.target.value) || RATES.defaultDiesel;
     state.dieselPrice = newPrice;
     state.dieselPriceModified = true;
     document.getElementById('diesel-price-badge').style.display = 'none';
@@ -157,7 +184,7 @@ function setupFuelFields() {
       // Dollars stay fixed, recalculate litres
       const dollarsYearInput = document.getElementById('fuel-dollars-year');
       if (dollarsYearInput.value) {
-        const litres = dollarsToLitres(parseFloat(dollarsYearInput.value), state.dieselPrice);
+        const litres = dollarsToLitres(parseNumberInput(dollarsYearInput.value), state.dieselPrice);
         state.fuelLitresYear = litres;
         updateFuelFieldsFromAnnual();
       }
@@ -204,7 +231,7 @@ function setupRebateFields() {
   
   // Off-road % input field
   offRoadPercent.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.offRoadPercent = value;
     updateOffRoadButtonStates();
     updateAllCalculations();
@@ -213,7 +240,7 @@ function setupRebateFields() {
   // Off-road % buttons (0-100 in 10% increments)
   document.querySelectorAll('.btn-percent').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const value = parseFloat(e.target.dataset.value);
+      const value = parseNumberInput(e.target.dataset.value);
       state.offRoadPercent = value;
       offRoadPercent.value = value;
       updateOffRoadButtonStates();
@@ -224,7 +251,7 @@ function setupRebateFields() {
   // Industry preset buttons
   document.querySelectorAll('.btn-industry').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const value = parseFloat(e.target.dataset.value);
+      const value = parseNumberInput(e.target.dataset.value);
       state.offRoadPercent = value;
       offRoadPercent.value = value;
       updateOffRoadButtonStates();
@@ -234,7 +261,7 @@ function setupRebateFields() {
   
   // Actual claim pair ($ <-> %)
   actualDollars.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.actualDollars = value || null;
     
     // Update % from $
@@ -250,7 +277,7 @@ function setupRebateFields() {
   });
   
   actualPercent.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.actualPercent = value || null;
     
     // Update $ from %
@@ -265,7 +292,7 @@ function setupRebateFields() {
   
   // Gut feel pair ($ <-> %)
   gutfeelDollars.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.gutfeelDollars = value || null;
     
     // Update % from $
@@ -281,7 +308,7 @@ function setupRebateFields() {
   });
   
   gutfeelPercent.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.gutfeelPercent = value || null;
     
     // Update $ from %
@@ -297,7 +324,7 @@ function setupRebateFields() {
 
 function updateOffRoadButtonStates() {
   document.querySelectorAll('.btn-percent').forEach(btn => {
-    if (parseFloat(btn.dataset.value) === state.offRoadPercent) {
+    if (parseNumberInput(btn.dataset.value) === state.offRoadPercent) {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
@@ -316,7 +343,7 @@ function setupAdminFields() {
   
   // Hours per week
   adminWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.adminHoursYear = value * 52;
       state.adminDollarsLastSource = 'hours';
@@ -336,7 +363,7 @@ function setupAdminFields() {
   
   // Hours per month
   adminMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.adminHoursYear = value * 12;
       state.adminDollarsLastSource = 'hours';
@@ -356,7 +383,7 @@ function setupAdminFields() {
   
   // Hourly rate
   adminRate.addEventListener('input', (e) => {
-    state.adminRate = parseFloat(e.target.value) || RATES.defaultHourlyRate;
+    state.adminRate = parseNumberInput(e.target.value) || RATES.defaultHourlyRate;
     state.adminRateModified = true;
     document.getElementById('admin-rate-badge').style.display = 'none';
     if (state.adminDollarsLastSource === 'hours') {
@@ -368,7 +395,7 @@ function setupAdminFields() {
   // Quick picks
   document.querySelectorAll('.btn-quick-admin').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const value = parseFloat(e.target.dataset.value);
+      const value = parseNumberInput(e.target.dataset.value);
       state.adminRate = value;
       adminRate.value = value;
       state.adminRateModified = true;
@@ -382,7 +409,7 @@ function setupAdminFields() {
   
   // $ per week
   adminDollarsWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.adminDollarsLastSource = 'dollars';
       const dollarsYear = value * 52;
@@ -408,7 +435,7 @@ function setupAdminFields() {
   
   // $ per month
   adminDollarsMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.adminDollarsLastSource = 'dollars';
       const dollarsYear = value * 12;
@@ -434,7 +461,7 @@ function setupAdminFields() {
   
   // $ per year
   adminDollarsYear.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     if (value) {
       state.adminDollarsLastSource = 'dollars';
       const dollarsYear = value;
@@ -479,13 +506,13 @@ function setupOperatorFields() {
   const operatorRate = document.getElementById('operator-rate');
   
   operatorMinutes.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.operatorMinutesPerDispense = value || null;
     updateAllCalculations();
   });
   
   operatorDispenses.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
+    const value = parseNumberInput(e.target.value);
     state.operatorDispensesPerWeek = value || null;
     state.operatorDispensesModified = true; // User has typed their own value
     document.getElementById('dispenses-badge').style.display = 'none';
@@ -493,7 +520,7 @@ function setupOperatorFields() {
   });
   
   operatorRate.addEventListener('input', (e) => {
-    state.operatorRate = parseFloat(e.target.value) || RATES.defaultHourlyRate;
+    state.operatorRate = parseNumberInput(e.target.value) || RATES.defaultHourlyRate;
     state.operatorRateModified = true;
     document.getElementById('operator-rate-badge').style.display = 'none';
     updateAllCalculations();
@@ -502,7 +529,7 @@ function setupOperatorFields() {
   // Quick picks
   document.querySelectorAll('.btn-quick-operator').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const value = parseFloat(e.target.dataset.value);
+      const value = parseNumberInput(e.target.dataset.value);
       state.operatorRate = value;
       operatorRate.value = value;
       state.operatorRateModified = true;
@@ -527,7 +554,7 @@ function setupTheftFields() {
   });
   
   theftPercent.addEventListener('input', (e) => {
-    state.theftPercent = parseFloat(e.target.value) || 0;
+    state.theftPercent = parseNumberInput(e.target.value) || 0;
     updateAllCalculations();
   });
 }
@@ -544,11 +571,36 @@ function updateAllCalculations() {
 function updateSectionResults() {
   // Section 2: Rebate
   const rebateShouldEl = document.getElementById('result-rebate-should');
+  const rebateMissedLine = document.getElementById('rebate-missed-line');
+  const rebateMissedValue = document.getElementById('rebate-missed-value');
+  const rebateMissedSource = document.getElementById('rebate-missed-source');
+  
   if (state.fuelLitresYear && state.offRoadPercent !== null) {
     const rebate = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
     rebateShouldEl.textContent = formatCurrency(rebate);
+    
+    // Calculate and show rebate missed
+    let rebateMissed = 0;
+    let missedSource = '';
+    
+    if (state.actualDollars) {
+      rebateMissed = calculateRebateMissed(rebate, state.actualDollars);
+      missedSource = '(from actual claim)';
+    } else if (state.gutfeelDollars) {
+      rebateMissed = calculateRebateMissed(rebate, state.gutfeelDollars);
+      missedSource = '(from gut feel)';
+    }
+    
+    if (rebateMissed > 0) {
+      rebateMissedLine.style.display = 'flex';
+      rebateMissedValue.textContent = formatCurrency(rebateMissed);
+      rebateMissedSource.textContent = missedSource;
+    } else {
+      rebateMissedLine.style.display = 'none';
+    }
   } else {
     rebateShouldEl.textContent = '—';
+    rebateMissedLine.style.display = 'none';
   }
   
   // Section 3: Admin
@@ -738,6 +790,37 @@ function updateTotalResults() {
   const totalSavings = calculateTotalSavings(rebateMissedForTotal, adminCost, operatorCost, theftExposure);
   document.getElementById('total-savings').textContent = formatCurrency(totalSavings);
   document.getElementById('savings-source').textContent = savingsSource;
+}
+
+// Setup thousands separators for all integer input fields
+function setupThousandsSeparators() {
+  // Fuel use - all integer fields
+  addThousandsSeparator(document.getElementById('fuel-litres-week'));
+  addThousandsSeparator(document.getElementById('fuel-litres-month'));
+  addThousandsSeparator(document.getElementById('fuel-litres-year'));
+  addThousandsSeparator(document.getElementById('fuel-dollars-week'));
+  addThousandsSeparator(document.getElementById('fuel-dollars-month'));
+  addThousandsSeparator(document.getElementById('fuel-dollars-year'));
+  // diesel-price is decimal, skip
+  
+  // Rebate - dollars are integers, percents are decimals
+  addThousandsSeparator(document.getElementById('actual-dollars'));
+  addThousandsSeparator(document.getElementById('gutfeel-dollars'));
+  // Percents are decimals, skip
+  
+  // Admin - dollars are integers, hours are decimals
+  addThousandsSeparator(document.getElementById('admin-dollars-week'));
+  addThousandsSeparator(document.getElementById('admin-dollars-month'));
+  addThousandsSeparator(document.getElementById('admin-dollars-year'));
+  addThousandsSeparator(document.getElementById('admin-rate'));
+  // Hours are decimals, skip
+  
+  // Operator - rate is integer, minutes and dispenses are decimals/integers
+  addThousandsSeparator(document.getElementById('operator-rate'));
+  // minutes-per-dispense is decimal, skip
+  // dispenses-per-week could be integer or decimal, skip for now
+  
+  // Theft - percent is decimal, skip
 }
 
 // Initialize on load

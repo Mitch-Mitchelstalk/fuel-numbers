@@ -12,10 +12,12 @@
   --section-1-light: #EFF6FF;
   --section-2-color: #8B5CF6; /* Purple - Rebate */
   --section-2-light: #F5F3FF;
-  --section-3-color: #10B981; /* Green - Admin & Log-book */
-  --section-3-light: #ECFDF5;
-  --section-4-color: #F59E0B; /* Amber - Theft */
-  --section-4-light: #FFFBEB;
+  --section-3-color: #CA8A04; /* Yellow - Admin & Log-book */
+  --section-3-light: #FEFCE8;
+  --section-3-header: #FEF9C3;
+  --section-4-color: #D97706; /* Amber - Theft */
+  --section-4-light: #FFF7ED;
+  --section-4-header: #FED7AA;
   
   /* Results panel colors */
   --money-missing-color: #B42318; /* Muted crimson for costs */
@@ -157,10 +159,10 @@ header p {
 }
 
 #section-admin h2 {
-  color: var(--section-3-color);
+  color: #713F12;
   padding: 1rem 1.25rem;
   margin: -2rem -2rem 1.75rem -2rem;
-  background-color: #D1FAE5;
+  background-color: var(--section-3-header);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -174,10 +176,10 @@ header p {
 }
 
 #section-theft h2 {
-  color: var(--section-4-color);
+  color: #92400E;
   padding: 1rem 1.25rem;
   margin: -2rem -2rem 1.75rem -2rem;
-  background-color: #FEF3C7;
+  background: linear-gradient(135deg, #FDE68A 0%, var(--section-4-header) 100%);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -442,6 +444,37 @@ header p {
   font-weight: 700;
   color: var(--section-3-color);
   font-size: 1.125rem;
+}
+
+/* Rebate Missed Line (soft red) */
+.rebate-missed-line {
+  margin: 0.75rem 0 1.5rem;
+  padding: 0.875rem 1.25rem;
+  background: var(--money-missing-bg);
+  border-left: 3px solid var(--money-missing-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.rebate-missed-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.rebate-missed-value {
+  font-weight: 700;
+  color: var(--money-missing-color);
+  font-size: 1.125rem;
+}
+
+.rebate-missed-source {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 /* Radio Groups */

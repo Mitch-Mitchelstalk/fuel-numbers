@@ -12,7 +12,9 @@ import {
   calculateAdminCost,
   calculateOperatorTimeCost,
   calculateTheftExposure,
-  calculateTotalSavings
+  calculateTotalSavings,
+  parseNumberInput,
+  formatNumberInput
 } from './calculator.js';
 
 // Test utilities
@@ -229,6 +231,31 @@ function testDispensesAndAdminDollars() {
   assertEqual(adminHoursMonthRounded, 4.3, 'Admin hours: 1 hr/wk → 4.3 hrs/month (1 × 52 / 12)');
 }
 
+/**
+ * Test Case 7: Thousands separator parsing and formatting
+ */
+function testThousandsSeparators() {
+  // Parse: "1,234,567" → 1234567
+  const parsed = parseNumberInput('1,234,567');
+  assertEqual(parsed, 1234567, 'Parse: "1,234,567" → 1234567');
+  
+  // Format: 48000 → "48,000"
+  const formatted = formatNumberInput(48000);
+  assertEqual(formatted, '48,000', 'Format: 48000 → "48,000"');
+  
+  // Parse and format round trip
+  const roundTrip = formatNumberInput(parseNumberInput('1,234'));
+  assertEqual(roundTrip, '1,234', 'Round trip: "1,234" → 1234 → "1,234"');
+  
+  // Large number
+  const large = formatNumberInput(1234567890);
+  assertEqual(large, '1,234,567,890', 'Large: 1234567890 → "1,234,567,890"');
+  
+  // Parse without commas
+  const noCommas = parseNumberInput('48000');
+  assertEqual(noCommas, 48000, 'Parse without commas: "48000" → 48000');
+}
+
 // Run all tests
 export function runAllTests() {
   console.log('\n=== Running Fuel Numbers Calculator Tests ===\n');
@@ -239,7 +266,8 @@ export function runAllTests() {
     runTest('Test Case 3: Linked fields', testLinkedFields),
     runTest('Test Case 4: Skips', testSkips),
     runTest('Test Case 5: Over-claim guard', testOverClaimGuard),
-    runTest('Test Case 6: Dispenses default and admin $ linkage', testDispensesAndAdminDollars)
+    runTest('Test Case 6: Dispenses default and admin $ linkage', testDispensesAndAdminDollars),
+    runTest('Test Case 7: Thousands separator parse/format', testThousandsSeparators)
   ];
   
   const passed = results.filter(r => r).length;

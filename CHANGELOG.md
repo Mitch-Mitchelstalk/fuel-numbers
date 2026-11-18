@@ -2,6 +2,36 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.6] - 2026-11-18
+
+### Added - Rebate Missed Display & Thousands Separators
+- **Rebate missed in Section 2:** Live-updating "Rebate missed: $X" line displays under "Rebate they should be getting"
+  - Shows actual claim if filled, otherwise gut feel
+  - Labels source "(from actual claim)" or "(from gut feel)"
+  - Displayed in soft red (#B42318 on #FEF3F2 background)
+  - Hidden when no claim data available
+- **Thousands separators:** All number input fields and displayed figures now show with commas (e.g. 1,234,567,890)
+  - Format on blur without breaking cursor position
+  - Parse strips commas for calculations
+  - Decimal fields (diesel price, hours, percentages) keep their decimals
+  - Test coverage: parse "1,234,567" → 1234567; format 48000 → "48,000"
+
+### Changed - Section Colors Refinement
+- **Section 3 (Admin & Log-book):** Changed from green to YELLOW
+  - Accent: #CA8A04
+  - Header background: #FEF9C3
+  - Card background: #FEFCE8
+  - Text: Dark brown #713F12 for AA contrast on yellow
+- **Section 4 (Theft risk):** Changed to warmer AMBER (distinct from yellow)
+  - Accent: #D97706
+  - Header background: Gradient #FDE68A → #FED7AA
+  - Card background: #FFF7ED
+  - Text: Dark brown #92400E for AA contrast
+
+### Testing
+- All 7 test cases pass
+- New test: Test Case 7 - Thousands separator parse/format
+
 ## [1.2.5] - 2026-11-18
 
 ### Changed - Green Total Savings Card

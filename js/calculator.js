@@ -155,7 +155,26 @@ export function isDispensedMoreThanTotal(totalAnnualLitres, dispensedAnnualLitre
 }
 
 /**
- * Format number with commas
+ * Parse number string, stripping commas
+ */
+export function parseNumberInput(str) {
+  if (!str || str === '') return null;
+  const cleaned = str.replace(/,/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? null : num;
+}
+
+/**
+ * Format number input with commas (for integer fields)
+ */
+export function formatNumberInput(num) {
+  if (num === null || num === undefined || num === '') return '';
+  const rounded = Math.round(num);
+  return rounded.toLocaleString('en-US');
+}
+
+/**
+ * Format number with commas (for display)
  */
 export function formatNumber(num) {
   return Math.round(num).toLocaleString('en-US');

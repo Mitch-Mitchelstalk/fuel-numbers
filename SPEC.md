@@ -39,6 +39,7 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 - **Gut feel:** Two linked fields ($ per year ↔ % per year). Same linking behavior as actual claim.
 - Both claim pairs are always visible and editable. Rebate missed is calculated separately for each.
 - **Section result:** Shows "Rebate they should be getting" calculated from total fuel litres (Section 1) and off-road %.
+- **Rebate missed:** Displays "Rebate missed: $X" under "Rebate they should be getting" with source label "(from actual claim)" or "(from gut feel)". Shows actual claim if filled, otherwise gut feel. Displayed in soft red. Hidden when no claim data available.
 - **Note:** Rebate and theft calculations now use total fuel litres from Section 1 (D = L). On-site dispensed litres fields have been removed.
 
 ### Section 3: Admin & Operator Time
@@ -66,6 +67,12 @@ Always visible, shows all calculated values updating live:
 9. ATO rate source line at bottom
 
 All results update automatically as inputs change. No navigation buttons, no progress bar, no separate screens.
+
+## Number Formatting
+- **Thousands separators:** All integer input fields (litres, dollars) and all displayed figures show with commas (e.g., 1,234,567,890).
+- **Input behavior:** On blur, integer fields format with commas. On focus, commas are stripped for easier editing. Parsing always strips commas before calculations.
+- **Decimal fields:** Diesel price, hours, and percentages keep their decimal places without commas.
+- **Display:** All monetary results and large numbers display with thousands separators using toLocaleString('en-US').
 
 ## Six linked fuel-usage fields
 Litres per week, month and year, and dollars per week, month and year. Typing in any one fills the other five.
