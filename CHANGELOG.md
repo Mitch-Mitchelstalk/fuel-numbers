@@ -2,6 +2,49 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.5] - 2026-11-18
+
+### Changed - Section 4 Layout Reorganization
+
+**Theft Risk Section: Top-to-Bottom Flow**
+- ✅ **Preset buttons moved to top** of section (above risk cards)
+- ✅ **Risk cards in middle** row (Low/Medium/High)
+- ✅ **Theft % input at bottom** (below cards)
+- ✅ **All 8 preset buttons** in single horizontal row: 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6%
+- ✅ **Two-way sync maintained** across all 3 control types
+
+**New Layout (top to bottom):**
+
+1. **Quick presets (top):** 8 buttons in single row for instant access to common values
+2. **Risk level cards (middle):** 3 compact cards showing Low (0.6%), Medium (3%), High (6%)
+3. **Theft % input (bottom):** Direct editable field with ESTIMATE badge
+
+**Why This Layout:**
+- **Progressive disclosure:** Quick presets → risk context → precise input
+- **Visual hierarchy:** Most-used controls (presets) at top for fastest access
+- **Clear separation:** Each control type in its own row reduces visual clutter
+- **Consistent flow:** Top-to-bottom matches typical form-filling pattern
+
+**User Experience:**
+- **Quick selection:** Preset buttons at top for immediate one-click access
+- **Risk framing:** Cards provide context (Low/Medium/High scenarios)
+- **Fine control:** Direct input at bottom for any custom percentage
+- **All 3 methods stay synchronized:** Buttons ↔ Cards ↔ Input
+
+**Implementation:**
+- **index.html:** Reordered Section 4 field-groups (presets → cards → input)
+- **No CSS or JS changes required** (existing sync logic works with new order)
+- **All 8 buttons retained** (fit cleanly in single row at desktop widths)
+
+**Testing:**
+- All 7 automated tests pass ✓
+- Two-way highlighting works correctly ✓
+- Layout renders cleanly at 1280×700 ✓
+
+**Updated:**
+- **SPEC.md:** Section 4 now describes top-to-bottom layout flow
+- **CHANGELOG.md:** This entry
+
 ## [1.6.4] - 2026-11-18
 
 ### Changed - Compact Risk Cards

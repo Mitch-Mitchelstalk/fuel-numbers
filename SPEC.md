@@ -63,10 +63,19 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 - **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
-- **Risk level cards:** Three compact cards in a single row (Low 0.6%, Medium 3%, High 6%). Low selected by default. Selecting a card sets the theft %. If user types a % or clicks a preset button, the matching card highlights (or none if no match).
-- **Theft % (editable):** Direct input field. Default 0.6% (marked ESTIMATE). Accepts decimals (step 0.1). ESTIMATE badge disappears when user edits field or clicks quick-pick button.
-- **Quick-pick buttons:** 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6% for granular theft scenarios. Active button highlighted in amber. Clicking a button also highlights the matching risk card if applicable (0.6% → Low, 3% → Medium, 6% → High).
-- **Section result:** Shows theft exposure per year (total fuel × theft % × diesel price).
+
+**Layout (top to bottom):**
+
+1. **Quick-pick preset buttons (top row):** 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6% in a single horizontal row. Active button highlighted in amber.
+2. **Risk level cards (middle row):** Three compact cards side by side (Low 0.6%, Medium 3%, High 6%). Low selected by default. Active card highlighted in amber.
+3. **Theft % input (bottom):** Direct editable input field. Default 0.6% (marked ESTIMATE). Accepts decimals (step 0.1). ESTIMATE badge disappears when user edits field or clicks preset button/card.
+
+**Two-way sync:**
+- Selecting a risk card → sets theft % and highlights matching preset button
+- Clicking a preset button → sets theft % and highlights matching risk card (0.6% → Low, 3% → Medium, 6% → High)
+- Typing a % → highlights matching card and button, or none if no match
+
+**Section result:** Shows theft exposure per year (total fuel × theft % × diesel price).
 
 ### Results Panel (sticky right column)
 Always visible, shows all calculated values updating live:
