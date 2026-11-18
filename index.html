@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Fuel Numbers - Calculator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fuel Numbers</h1>
+      <p class="subtitle">Fuel savings calculator</p>
+    </header>
+    
+    <div class="calculator-layout">
+      <main class="calculator-sections">
+        <!-- Section 1: Fuel Use -->
+        <section class="calc-section" id="section-fuel">
+          <h2><span class="section-number">1</span> Fuel Use</h2>
+          
+          <div class="field-group">
+            <label>Litres</label>
+            <div class="field-row-horizontal">
+              <div class="field-col">
+                <label class="field-sublabel">per week</label>
+                <input type="text" inputmode="decimal" id="fuel-litres-week" class="form-input" placeholder="e.g., 923">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per month</label>
+                <input type="text" inputmode="decimal" id="fuel-litres-month" class="form-input" placeholder="e.g., 4000">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per year</label>
+                <input type="text" inputmode="decimal" id="fuel-litres-year" class="form-input" placeholder="e.g., 48000">
+              </div>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label>Dollars</label>
+            <div class="field-row-horizontal">
+              <div class="field-col">
+                <label class="field-sublabel">per week</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="text" inputmode="decimal" id="fuel-dollars-week" class="form-input" placeholder="e.g., 2049">
+                </div>
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per month</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="text" inputmode="decimal" id="fuel-dollars-month" class="form-input" placeholder="e.g., 8880">
+                </div>
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per year</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="text" inputmode="decimal" id="fuel-dollars-year" class="form-input" placeholder="e.g., 106560">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label>Diesel price <span id="diesel-price-badge" class="estimate-badge">estimate</span></label>
+            <div class="input-with-prefix">
+              <span class="prefix">$</span>
+              <input type="number" id="diesel-price" class="form-input" value="2.50" step="0.01">
+              <span class="suffix">per litre</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Rebate -->
+        <section class="calc-section" id="section-rebate">
+          <h2><span class="section-number">2</span> Rebate</h2>
+          
+          <div class="field-group">
+            <label>Off-road %</label>
+            <input type="number" id="offroad-percent" class="form-input" placeholder="Enter %" min="0" max="100" style="max-width: 150px;">
+            
+            <div class="button-grid" style="margin-top: 1rem;">
+              <button type="button" class="btn-percent" data-value="0">0%</button>
+              <button type="button" class="btn-percent" data-value="10">10%</button>
+              <button type="button" class="btn-percent" data-value="20">20%</button>
+              <button type="button" class="btn-percent" data-value="30">30%</button>
+              <button type="button" class="btn-percent" data-value="40">40%</button>
+              <button type="button" class="btn-percent" data-value="50">50%</button>
+              <button type="button" class="btn-percent" data-value="60">60%</button>
+              <button type="button" class="btn-percent" data-value="70">70%</button>
+              <button type="button" class="btn-percent" data-value="80">80%</button>
+              <button type="button" class="btn-percent" data-value="90">90%</button>
+              <button type="button" class="btn-percent" data-value="100">100%</button>
+            </div>
+            
+            <div class="industry-presets" style="margin-top: 1rem;">
+              <label style="font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Industry presets:</label>
+              <button type="button" class="btn-industry" data-value="80">Civil 80%</button>
+              <button type="button" class="btn-industry" data-value="90">Agriculture 90%</button>
+              <button type="button" class="btn-industry" data-value="5">Transport 5%</button>
+              <button type="button" class="btn-industry" data-value="75">Asphalt 75%</button>
+            </div>
+          </div>
+          
+          <div class="claim-columns">
+            <div class="claim-column" id="actual-column">
+              <h3 class="claim-column-title">Actual claim</h3>
+              <div class="claim-field">
+                <label class="field-sublabel">$ per year</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="text" inputmode="decimal" id="actual-dollars" class="form-input" placeholder="e.g., 20000">
+                </div>
+              </div>
+              <div class="claim-field">
+                <label class="field-sublabel">% per year</label>
+                <input type="number" id="actual-percent" class="form-input" placeholder="e.g., 82.6" min="0" max="200" step="0.1">
+              </div>
+            </div>
+            
+            <div class="claim-divider">
+              <span class="or-badge">OR</span>
+            </div>
+            
+            <div class="claim-column" id="gutfeel-column">
+              <h3 class="claim-column-title">Gut feel</h3>
+              <div class="claim-field">
+                <label class="field-sublabel">$ per year</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="text" inputmode="decimal" id="gutfeel-dollars" class="form-input" placeholder="e.g., 19377">
+                </div>
+              </div>
+              <div class="claim-field">
+                <label class="field-sublabel">% per year</label>
+                <input type="number" id="gutfeel-percent" class="form-input" placeholder="e.g., 80" min="0" max="200" step="0.1">
+              </div>
+            </div>
+          </div>
+          
+          <div class="section-result">
+            <div class="result-line">
+              <span class="result-label">Rebate they should be getting:</span>
+              <span id="result-rebate-should" class="result-value">—</span>
+            </div>
+          </div>
+          
+          <div class="rebate-missed-line" id="rebate-missed-line" style="display: none;">
+            <span class="rebate-missed-label">Rebate missed:</span>
+            <span id="rebate-missed-value" class="rebate-missed-value">—</span>
+            <span id="rebate-missed-source" class="rebate-missed-source"></span>
+          </div>
+        </section>
+
+        <!-- Section 3: Admin & Operator Time -->
+        <section class="calc-section" id="section-admin">
+          <h2><span class="section-number">3</span> Admin & Operator Time</h2>
+          
+          <h3 class="subsection-title">Admin time</h3>
+          <div class="admin-grid">
+            <div class="admin-field-box">
+              <label>Hours per week</label>
+              <input type="number" id="admin-hours-week" class="form-input" placeholder="e.g., 1">
+            </div>
+            <div class="admin-field-box">
+              <label>Hours per month</label>
+              <input type="number" id="admin-hours-month" class="form-input" placeholder="e.g., 4">
+            </div>
+            <div class="admin-field-box">
+              <label>Hourly rate <span id="admin-rate-badge" class="estimate-badge">estimate</span></label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-rate" class="form-input" value="52">
+              </div>
+              <div class="quick-picks">
+                <button type="button" class="btn-quick-admin" data-value="35">$35</button>
+                <button type="button" class="btn-quick-admin" data-value="52">$52</button>
+                <button type="button" class="btn-quick-admin" data-value="75">$75</button>
+              </div>
+            </div>
+            <div class="admin-field-box">
+              <label>$ per week</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-week" class="form-input" placeholder="e.g., 35">
+              </div>
+            </div>
+            <div class="admin-field-box">
+              <label>$ per month</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-month" class="form-input" placeholder="e.g., 152">
+              </div>
+            </div>
+            <div class="admin-field-box">
+              <label>$ per year</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-year" class="form-input" placeholder="e.g., 1820">
+              </div>
+            </div>
+          </div>
+          
+          <div class="reference-line">
+            <span class="reference-label">Admin cost:</span>
+            <span id="admin-cost-reference" class="reference-value">—</span>
+          </div>
+          
+          <h3 class="subsection-title">Log-book time (optional)</h3>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Minutes per dispense <span id="minutes-badge" class="estimate-badge">estimate</span></label>
+              <input type="number" id="operator-minutes-per-dispense" class="form-input" value="1">
+            </div>
+            <div class="field-group">
+              <label>Dispenses per week <span id="dispenses-badge" class="estimate-badge">estimate</span></label>
+              <input type="number" id="operator-dispenses-per-week" class="form-input" placeholder="e.g., 30">
+              <div class="field-note">(assumes 100 L per dispense)</div>
+            </div>
+            <div class="field-group">
+              <label>Hourly rate <span id="operator-rate-badge" class="estimate-badge">estimate</span></label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="operator-rate" class="form-input" value="52">
+              </div>
+              <div class="quick-picks">
+                <button type="button" class="btn-quick-operator" data-value="35">$35</button>
+                <button type="button" class="btn-quick-operator" data-value="40">$40</button>
+                <button type="button" class="btn-quick-operator" data-value="52">$52</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="section-result">
+            <div class="result-line">
+              <span class="result-label">Admin cost per year:</span>
+              <span id="result-admin" class="result-value">—</span>
+            </div>
+            <div class="result-line" id="result-operator-line" style="display: none;">
+              <span class="result-label">Operator time cost per year:</span>
+              <span id="result-operator" class="result-value">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Theft Risk -->
+        <section class="calc-section" id="section-theft">
+          <h2><span class="section-number">4</span> Theft Risk</h2>
+          
+          <div class="field-group">
+            <label>Risk level</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="risk" value="low" checked>
+                <div class="radio-content">
+                  <strong>Low</strong> - Locked up, staff only
+                  <div class="radio-detail">Theft 1%</div>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="risk" value="medium">
+                <div class="radio-content">
+                  <strong>Medium</strong> - Some contractor access, mixed controls
+                  <div class="radio-detail">Theft 3%</div>
+                </div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="risk" value="high">
+                <div class="radio-content">
+                  <strong>High</strong> - Open access, remote, little oversight
+                  <div class="radio-detail">Theft 6%</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label>Theft % (editable) <span id="theft-badge" class="estimate-badge">estimate</span></label>
+            <input type="number" id="theft-percent" class="form-input" value="1" step="0.1" min="0" max="100">
+            <div class="quick-picks">
+              <button type="button" class="btn-quick-theft" data-value="0">0%</button>
+              <button type="button" class="btn-quick-theft" data-value="1">1%</button>
+              <button type="button" class="btn-quick-theft" data-value="3">3%</button>
+              <button type="button" class="btn-quick-theft" data-value="6">6%</button>
+            </div>
+          </div>
+          
+          <div class="section-result">
+            <div class="result-line">
+              <span class="result-label">Theft exposure per year:</span>
+              <span id="result-theft" class="result-value">—</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Sticky Results Panel -->
+      <aside class="results-panel">
+        <h2>Results</h2>
+        <div class="results-content">
+          <div class="result-item headline">
+            <div class="result-label">Rebate they should be getting</div>
+            <div id="total-rebate-should" class="result-value">—</div>
+            <div class="result-note">per year</div>
+          </div>
+          
+          <div class="result-item" id="getting-now-item" style="display: none;">
+            <div class="result-label">What they're getting now</div>
+            <div id="total-getting-now" class="result-value">—</div>
+            <div class="result-note" id="getting-now-note"></div>
+          </div>
+          
+          <div class="result-item money-missing" id="actual-missed-item" style="display: none;">
+            <div class="result-label">Rebate missed (actual claim)</div>
+            <div id="total-actual-missed" class="result-value">—</div>
+            <div class="result-note" id="actual-missed-note"></div>
+          </div>
+          
+          <div class="result-item money-missing" id="gutfeel-missed-item" style="display: none;">
+            <div class="result-label">Rebate missed (gut feel)</div>
+            <div id="total-gutfeel-missed" class="result-value">—</div>
+            <div class="result-note" id="gutfeel-missed-note"></div>
+          </div>
+          
+          <div class="result-item money-missing">
+            <div class="result-label">Admin cost</div>
+            <div id="total-admin" class="result-value">—</div>
+            <div class="result-note">per year <span id="admin-hours-note"></span></div>
+          </div>
+          
+          <div class="result-item money-missing" id="operator-item" style="display: none;">
+            <div class="result-label">Log-book time cost</div>
+            <div id="total-operator" class="result-value">—</div>
+            <div class="result-note">per year <span id="operator-hours-note"></span></div>
+          </div>
+          
+          <div class="result-item money-missing">
+            <div class="result-label">Theft exposure</div>
+            <div id="total-theft" class="result-value">—</div>
+            <div class="result-note">per year</div>
+          </div>
+          
+          <div class="result-item total">
+            <div class="result-label">Total potential savings</div>
+            <div id="total-savings" class="result-value">—</div>
+            <div class="result-note">per year <span id="savings-source"></span></div>
+          </div>
+          
+          <div class="rate-source">ATO rates for fuel acquired from 3 Aug 2026</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+  
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "fuel-numbers",
+  "version": "1.0.0",
+  "description": "Fuel Numbers calculator - Fuellox salesperson tool for calculating potential yearly fuel savings",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000 || python -m http.server 8000 || php -S localhost:8000",
+    "test": "node js/calculator.test.js"
+  },
+  "keywords": [
+    "fuel",
+    "calculator",
+    "savings"
+  ],
+  "author": "Fuellox",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "puppeteer": "^25.18.1"
+  }
+}
