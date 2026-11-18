@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "python3 -m http.server 8000 || python -m http.server 8000 || php -S localhost:8000",
-    "test": "node js/calculator.test.js"
+    "test": "node js/calculator.test.js && node js/export-import.test.js"
   },
   "keywords": [
     "fuel",
@@ -17,5 +17,8 @@
   "private": true,
   "dependencies": {
     "puppeteer": "^25.18.1"
+  },
+  "devDependencies": {
+    "jspdf": "^2.5.1"
   }
 }

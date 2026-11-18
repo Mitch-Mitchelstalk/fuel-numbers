@@ -2,6 +2,49 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.7.0] - 2026-11-18
+
+### Added - Export JSON, Import JSON, Download PDF
+
+**Header action bar** with three browser-only buttons: Export JSON, Import JSON, Download PDF. No server, no network calls, no analytics. Compact header keeps Total visible at 1280×700 on load.
+
+**Export JSON**
+- Downloads `fuel-numbers-YYYY-MM-DD.json`
+- YEARLY figures only (no weekly/monthly keys)
+- Per section: yearly inputs + yearly total; plus grand total
+- Includes `schemaVersion`, `appVersion`, `exportedAt` (ISO)
+- Stable camelCase keys for later CRM import
+- No customer/personal fields
+- Current example total: **$8,051** (missed $4,221 + admin $2,704 + log-book $406 + theft $720)
+
+**Import JSON**
+- File picker restores all inputs; weekly/monthly fields derived from yearly
+- Validates schemaVersion and numbers
+- Bad file → inline error; current inputs untouched
+
+**Download PDF**
+- One-click A4 one-page customer summary via vendored jsPDF (`js/vendor/`)
+- No print dialog, no CDN at runtime
+- Title, date, section yearly inputs/$, prominent total, estimates marked
+- File: `fuel-numbers-YYYY-MM-DD.pdf`
+
+**Implementation**
+- `js/export-import.js` — export, import, PDF helpers
+- `js/vendor/jspdf.umd.min.js` + `jspdf.LICENSE`
+- `js/app.js` — action bar wiring + DOM restore on import
+- Compact header action bar in `index.html` / `styles.css`
+
+**Tests**
+- Export total = 8051 for current example
+- Export contains no weekly/monthly keys
+- Export/import round-trip preserves yearly figures and total
+- Import rejects bad schemaVersion / invalid numbers
+- All calculator tests still pass
+
+**Docs**
+- SPEC.md — full export schema documented
+- CHANGELOG — this entry
+
 ## [1.6.7] - 2026-11-18
 
 ### Added - 0.1% Theft Preset

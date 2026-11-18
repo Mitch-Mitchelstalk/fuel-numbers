@@ -23,6 +23,14 @@ import {
   formatCurrency
 } from './calculator.js';
 
+import {
+  exportToJSON,
+  importFromJSON,
+  downloadJSON,
+  generatePDF,
+  getDateString
+} from './export-import.js';
+
 // App state
 const state = {
   // Fuel use
@@ -111,12 +119,205 @@ function init() {
   setupOperatorFields();
   setupTheftFields();
   setupThousandsSeparators();
+  setupExportImport();
   
   // Update button states
   updateTheftButtonStates();
   
   // Initial calculation
   updateAllCalculations();
+}
+
+function showImportError(message) {
+  const el = document.getElementById('import-error');
+  if (!el) return;
+  el.textContent = message;
+  el.style.display = 'block';
+  setTimeout(() => {
+    el.style.display = 'none';
+  }, 5000);
+}
+
+function clearImportError() {
+  const el = document.getElementById('import-error');
+  if (!el) return;
+  el.style.display = 'none';
+  el.textContent = '';
+}
+
+function setInputValue(id, value, { format = false } = {}) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    el.value = '';
+    return;
+  }
+  if (format) {
+    setFormattedValue(el, value);
+  } else {
+    el.value = value;
+  }
+}
+
+/**
+ * Apply imported state to app state + DOM, then recompute
+ */
+function applyImportedState(importedState, derived) {
+  Object.assign(state, importedState);
+
+  // Fuel fields
+  setInputValue('fuel-litres-week', derived.litresPerWeek, { format: true });
+  setInputValue('fuel-litres-month', derived.litresPerMonth, { format: true });
+  setInputValue('fuel-litres-year', derived.litresPerYear, { format: true });
+  setInputValue('fuel-dollars-week', derived.dollarsPerWeek, { format: true });
+  setInputValue('fuel-dollars-month', derived.dollarsPerMonth, { format: true });
+  setInputValue('fuel-dollars-year', derived.dollarsPerYear, { format: true });
+  setInputValue('diesel-price', state.dieselPrice);
+  const dieselBadge = document.getElementById('diesel-price-badge');
+  if (dieselBadge) {
+    dieselBadge.style.display = state.dieselPriceModified ? 'none' : '';
+  }
+
+  // Off-road
+  setInputValue('offroad-percent', state.offRoadPercent);
+  document.querySelectorAll('.btn-quick-offroad').forEach(btn => {
+    const pct = parseNumberInput(btn.dataset.value);
+    btn.classList.toggle('active', pct === state.offRoadPercent);
+  });
+
+  // Claim fields — clear both paths first
+  setInputValue('actual-dollars', null);
+  setInputValue('actual-percent', null);
+  setInputValue('gutfeel-dollars', null);
+  setInputValue('gutfeel-percent', null);
+
+  if (state.actualDollars !== null) {
+    setInputValue('actual-dollars', state.actualDollars, { format: true });
+    if (state.actualPercent !== null) {
+      setInputValue('actual-percent', state.actualPercent);
+    } else if (state.fuelLitresYear && state.offRoadPercent !== null) {
+      const r = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      if (r > 0) {
+        state.actualPercent = Math.round((state.actualDollars / r) * 1000) / 10;
+        setInputValue('actual-percent', state.actualPercent);
+      }
+    }
+  } else if (state.gutfeelPercent !== null) {
+    setInputValue('gutfeel-percent', state.gutfeelPercent);
+    if (state.fuelLitresYear && state.offRoadPercent !== null) {
+      const r = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      state.gutfeelDollars = Math.round(r * (state.gutfeelPercent / 100));
+      setInputValue('gutfeel-dollars', state.gutfeelDollars, { format: true });
+    }
+  } else if (state.gutfeelDollars !== null) {
+    setInputValue('gutfeel-dollars', state.gutfeelDollars, { format: true });
+  }
+
+  // Admin
+  setInputValue('admin-hours-week', derived.adminHoursWeek);
+  setInputValue('admin-hours-month', derived.adminHoursMonth);
+  setInputValue('admin-dollars-week', derived.adminDollarsWeek, { format: true });
+  setInputValue('admin-dollars-month', derived.adminDollarsMonth, { format: true });
+  setInputValue('admin-dollars-year', derived.adminDollarsYear, { format: true });
+  setInputValue('admin-rate', state.adminRate, { format: true });
+  const adminRateBadge = document.getElementById('admin-rate-badge');
+  if (adminRateBadge) {
+    adminRateBadge.style.display = state.adminRateModified ? 'none' : '';
+  }
+  document.querySelectorAll('.btn-quick-admin-rate').forEach(btn => {
+    const rate = parseNumberInput(btn.dataset.value);
+    btn.classList.toggle('active', rate === state.adminRate);
+  });
+
+  // Operator / log-book
+  setInputValue('operator-minutes-per-dispense', state.operatorMinutesPerDispense);
+  setInputValue('operator-dispenses-per-week', state.operatorDispensesPerWeek);
+  setInputValue('operator-rate', state.operatorRate, { format: true });
+  const operatorRateBadge = document.getElementById('operator-rate-badge');
+  if (operatorRateBadge) {
+    operatorRateBadge.style.display = state.operatorRateModified ? 'none' : '';
+  }
+  document.querySelectorAll('.btn-quick-operator-rate').forEach(btn => {
+    const rate = parseNumberInput(btn.dataset.value);
+    btn.classList.toggle('active', rate === state.operatorRate);
+  });
+
+  // Theft
+  setInputValue('theft-percent', state.theftPercent);
+  const theftBadge = document.getElementById('theft-badge');
+  if (theftBadge) {
+    theftBadge.style.display = state.theftModified ? 'none' : '';
+  }
+  document.querySelectorAll('input[name="risk"]').forEach(radio => {
+    radio.checked = state.riskLevel && radio.value === state.riskLevel;
+  });
+  updateTheftButtonStates();
+  if (typeof updateRiskCardStates === 'function') {
+    updateRiskCardStates();
+  }
+
+  updateAllCalculations();
+}
+
+function setupExportImport() {
+  const exportBtn = document.getElementById('btn-export-json');
+  const importBtn = document.getElementById('btn-import-json');
+  const importFile = document.getElementById('file-import-json');
+  const pdfBtn = document.getElementById('btn-download-pdf');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      clearImportError();
+      const data = exportToJSON(state);
+      downloadJSON(data, `fuel-numbers-${getDateString()}.json`);
+    });
+  }
+
+  if (importBtn && importFile) {
+    importBtn.addEventListener('click', () => {
+      clearImportError();
+      importFile.value = '';
+      importFile.click();
+    });
+
+    importFile.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        let jsonData;
+        try {
+          jsonData = JSON.parse(text);
+        } catch {
+          showImportError('Invalid JSON file');
+          return;
+        }
+
+        const result = importFromJSON(jsonData);
+        if (!result.success) {
+          showImportError(result.error);
+          return;
+        }
+
+        applyImportedState(result.state, result.derived);
+        clearImportError();
+      } catch (err) {
+        showImportError(`Import failed: ${err.message}`);
+      }
+    });
+  }
+
+  if (pdfBtn) {
+    pdfBtn.addEventListener('click', () => {
+      clearImportError();
+      try {
+        generatePDF(state);
+      } catch (err) {
+        showImportError(`PDF failed: ${err.message}`);
+      }
+    });
+  }
 }
 
 // Fuel use fields - six linked fields

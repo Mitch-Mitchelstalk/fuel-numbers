@@ -140,11 +140,82 @@ L = annual litres used (total fuel from Section 1). D = L (dispensed litres remo
 5. **Over-claim guard.** Farm example with actual claim $30,000: missed shows $0 with warning "Over-claiming; check the figures."
 6. **Dispenses default and admin $ linkage.** 48,000 L/year → 923 L/week → 9 dispenses per week (default, assumes 100 L per dispense). Admin $ linkage: $200/month → $2,400/year, $46/week, 1.3 hours/week at $35 (back-calculated).
 
+## Export / Import JSON and PDF
+
+Header action bar: **Export JSON**, **Import JSON**, **Download PDF**. Browser-only (no server, no network, no analytics). Vendored jsPDF under `js/vendor/` (no CDN at runtime).
+
+### Export schema (`schemaVersion: "1.0"`)
+
+Exports **yearly figures only**. No weekly or monthly keys. Flat-ish camelCase, suited to later CRM import. No customer names or personal fields.
+
+```json
+{
+  "schemaVersion": "1.0",
+  "appVersion": "1.7.0",
+  "exportedAt": "2026-11-18T12:00:00.000Z",
+  "fuelUse": {
+    "litresPerYear": 48000,
+    "offRoadPercent": 90,
+    "rebateShouldGetPerYear": 24221
+  },
+  "rebateClaim": {
+    "mode": "actual",
+    "claimedPerYear": 20000,
+    "claimedPercent": 82.6,
+    "missedPerYear": 4221
+  },
+  "admin": {
+    "hoursPerYear": 52,
+    "hourlyRate": 52,
+    "costPerYear": 2704
+  },
+  "logBook": {
+    "minutesPerDispense": 1,
+    "dispensesPerYear": 468,
+    "hourlyRate": 52,
+    "costPerYear": 406
+  },
+  "theft": {
+    "theftPercent": 0.6,
+    "litresPerYear": 288,
+    "dieselPricePerLitre": 2.5,
+    "exposurePerYear": 720
+  },
+  "total": {
+    "potentialSavingsPerYear": 8051
+  }
+}
+```
+
+| Section | Yearly inputs | Yearly total |
+|---------|---------------|--------------|
+| `fuelUse` | `litresPerYear`, `offRoadPercent` | `rebateShouldGetPerYear` |
+| `rebateClaim` | `mode` (`actual` / `gutfeel` / `none`), `claimedPerYear`, `claimedPercent` | `missedPerYear` |
+| `admin` | `hoursPerYear`, `hourlyRate` | `costPerYear` |
+| `logBook` | `minutesPerDispense`, `dispensesPerYear`, `hourlyRate` | `costPerYear` |
+| `theft` | `theftPercent`, `litresPerYear`, `dieselPricePerLitre` | `exposurePerYear` |
+| `total` | — | `potentialSavingsPerYear` |
+
+File name: `fuel-numbers-YYYY-MM-DD.json`.
+
+### Import
+- File picker reads an exported JSON file and restores every input so live results recompute to the same yearly figures.
+- Weekly and monthly linked fields are derived from yearly values.
+- Validates `schemaVersion` and numeric fields. On a bad file: small inline error; current inputs left untouched.
+
+### Download PDF
+- One-click A4 one-page customer summary via vendored jsPDF (`js/vendor/jspdf.umd.min.js`). No print dialog.
+- Title "Fuel Numbers", date, each section's key yearly inputs and yearly $, total potential savings prominent, estimates marked (theft %, diesel price).
+- File name: `fuel-numbers-YYYY-MM-DD.pdf`.
+
+### Current example export total
+With 48,000 L/year, 90% off-road, actual $20,000, admin 1 hr/week @ $52, log-book 1 min × 9 dispenses/week @ $52, theft 0.6% @ $2.50/L: **total = $8,051** ($4,221 + $2,704 + $406 + $720).
+
 ## Build and done
 - Repo, hosting and link visibility follow the approved review pack: a private GitHub repo (Mitch-Mitchelstalk/fuel-numbers) deployed on Netlify Free, unlisted and noindex.
 - Work goes through cloud agents only (rulebook R7). Mitch's go is needed for merges to main and for each public deploy.
 - Mobile-first: a salesperson may have it open on a phone during a call.
-- Done means: all six tests pass in the repo's automated tests; Mitch has clicked through the live link; the commit is verified on main (rulebook R14); the link is reported.
+- Done means: automated tests pass (calculator + export/import); Mitch has clicked through the live link; the commit is verified on main (rulebook R14); the link is reported.
 
 ## Decided
 - Theft exposure uses dispensed on-site litres (Mitch, 18 Nov 2026).
