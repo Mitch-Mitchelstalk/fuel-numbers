@@ -2,6 +2,36 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.9] - 2026-11-18
+
+### Fixed - Linked Field Filling Regression
+- **Bug:** Linked fields not being filled (gut feel $, admin $ per year empty)
+- **Root cause:** Setting formatted strings (with commas) on `type="number"` inputs, which browsers reject
+- **Solution:** Changed integer input fields to `type="text" inputmode="decimal"`
+  - Allows formatted values with commas to be set programmatically
+  - Mobile keyboards still show numeric keypad via `inputmode="decimal"`
+  - All linked pairs/triples now fill properly with comma formatting
+- **Changed fields:**
+  - Fuel litres (week, month, year)
+  - Fuel dollars (week, month, year)
+  - Rebate claim dollars (actual, gut feel)
+  - Admin rate and dollars (week, month, year)
+  - Operator rate
+- **Kept `type="number"`:** Decimal fields (diesel price, hours, minutes, percentages)
+- **Verified:** All linked fields fill with commas when partner edited:
+  - Litres w/m/y ↔ $ w/m/y
+  - Actual $ ↔ %
+  - Gut feel $ ↔ %
+  - Admin hrs w ↔ m
+  - Admin $ w/m/y
+
+### Testing
+- All 7 test cases pass
+- Browser-verified with 950,000 L/yr:
+  - All 6 fuel fields filled with commas (18,269 / 79,167 / 950,000 L and $ equivalents)
+  - Gut feel 70% → $324,786 with commas
+  - Admin 3 hrs/wk → $156/$676/$8,112 with commas
+
 ## [1.2.8] - 2026-11-18
 
 ### Changed - Section Styling Refinement
