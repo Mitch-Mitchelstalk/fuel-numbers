@@ -55,6 +55,7 @@ const state = {
   adminDollarsLastSource: 'hours', // Track whether hours or dollars was last edited
   
   // Theft
+  riskLevel: 'low', // Default low (0.6%)
   theftPercent: 0.6, // Default 0.6% (ESTIMATE)
   theftModified: false // Track if user has edited theft %
 };
@@ -673,11 +674,26 @@ function setupTheftFields() {
   const theftPercent = document.getElementById('theft-percent');
   const theftBadge = document.getElementById('theft-badge');
   
+  // Risk level cards
+  const riskRadios = document.querySelectorAll('input[name="risk"]');
+  riskRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      state.riskLevel = e.target.value;
+      state.theftPercent = RATES.theft[e.target.value] * 100;
+      theftPercent.value = state.theftPercent;
+      state.theftModified = true;
+      if (theftBadge) theftBadge.style.display = 'none';
+      updateTheftButtonStates();
+      updateAllCalculations();
+    });
+  });
+  
   theftPercent.addEventListener('input', (e) => {
     state.theftPercent = parseNumberInput(e.target.value) || 0;
     state.theftModified = true;
     if (theftBadge) theftBadge.style.display = 'none';
     updateTheftButtonStates();
+    updateRiskCardStates();
     updateAllCalculations();
   });
   
@@ -689,6 +705,7 @@ function setupTheftFields() {
       state.theftModified = true;
       if (theftBadge) theftBadge.style.display = 'none';
       updateTheftButtonStates();
+      updateRiskCardStates();
       updateAllCalculations();
     });
   });
@@ -700,6 +717,31 @@ function updateTheftButtonStates() {
       btn.classList.add('active');
     } else {
       btn.classList.remove('active');
+    }
+  });
+}
+
+function updateRiskCardStates() {
+  // Check if current theft % matches any of the risk levels
+  const currentPercent = state.theftPercent;
+  let matchingRisk = null;
+  
+  // Check each risk level (with tolerance for floating point)
+  if (Math.abs(currentPercent - RATES.theft.low * 100) < 0.01) {
+    matchingRisk = 'low';
+  } else if (Math.abs(currentPercent - RATES.theft.medium * 100) < 0.01) {
+    matchingRisk = 'medium';
+  } else if (Math.abs(currentPercent - RATES.theft.high * 100) < 0.01) {
+    matchingRisk = 'high';
+  }
+  
+  // Update radio buttons to reflect matching risk (or uncheck all if no match)
+  document.querySelectorAll('input[name="risk"]').forEach(radio => {
+    if (matchingRisk && radio.value === matchingRisk) {
+      radio.checked = true;
+      state.riskLevel = matchingRisk;
+    } else if (!matchingRisk) {
+      radio.checked = false;
     }
   });
 }

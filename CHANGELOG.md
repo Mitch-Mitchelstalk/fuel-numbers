@@ -2,6 +2,63 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.4] - 2026-11-18
+
+### Changed - Compact Risk Cards
+
+**Section 4: Risk Cards Restored with Compact Design**
+- ✅ **Restored Low/Medium/High risk cards** in compact single-row layout
+- ✅ **Changed Low to 0.6%** (was 1%) - label now reads "Theft 0.6%"
+- ✅ **Low selected by default** (matches 0.6% default theft %)
+- ✅ **Medium stays 3%**, High stays 6%
+- ✅ **Compact card design:** 3 cards side by side, each shows risk level name and theft %
+- ✅ **Two-way highlighting:** 
+  - Selecting a risk card sets the theft % and highlights the card (amber)
+  - Typing a % or clicking a preset button highlights the matching card (0.6% → Low, 3% → Medium, 6% → High) or shows no card selected if no match
+
+**Design:**
+- Cards display in a single horizontal row above the theft % input
+- Each card shows risk level (Low/Medium/High) and corresponding theft percentage
+- Active card highlighted with amber background (Section 4 color)
+- Compact sizing: `min-height: 64px`, flex layout, centered content
+
+**User Experience:**
+- **Quick presets:** Cards provide instant access to 3 most common scenarios
+- **Granular control:** 8 preset buttons + direct input for precise values
+- **Smart highlighting:** System always shows which risk level matches current %
+- **Clear feedback:** Active card and active button both highlighted
+
+**Implementation:**
+- **calculator.js:** Updated `RATES.theft.low` from `0.01` to `0.006` (0.6%)
+- **index.html:** Added `.risk-cards` with 3 `.risk-card` labels above theft % input
+- **styles.css:** Added compact card styles with `:has()` selector for active state
+- **app.js:** 
+  - Added `state.riskLevel: 'low'`
+  - Added risk radio event handlers in `setupTheftFields()`
+  - Added `updateRiskCardStates()` to highlight matching card when user types/clicks
+  - Risk card and preset button handlers call each other's update functions
+
+**Why the Change:**
+- Owner feedback preferred visible risk level cards for context
+- Compact design keeps UI clean while providing clear risk framing
+- Low at 0.6% aligns with conservative default estimate
+- Two-way highlighting maintains consistency across all controls
+
+### Testing
+- All 7 automated tests pass ✓
+- Risk cards render in single compact row ✓
+- Selecting Low card sets 0.6%, Medium sets 3%, High sets 6% ✓
+- Typing 0.6% highlights Low, typing 3% highlights Medium, typing 6% highlights High ✓
+- Typing 1% or 0.4% shows no card selected (both card and button systems independent) ✓
+- Clicking preset buttons updates both card and button highlighting ✓
+
+### Updated
+- **SPEC.md:** Section 4 now describes compact risk cards + theft input + preset buttons
+- **CHANGELOG.md:** This entry
+
+### Supersedes
+- v1.6.3 risk card removal - cancelled per owner request
+
 ## [1.6.3] - 2026-11-18
 
 ### Removed - Risk Level Radio Buttons

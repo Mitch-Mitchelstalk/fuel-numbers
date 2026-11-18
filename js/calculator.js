@@ -11,7 +11,7 @@ export const RATES = {
   defaultHourlyRate: 52, // $/hour
   hourlyRatePresets: [35, 52, 75],
   theft: {
-    low: 0.01,    // 1%
+    low: 0.006,   // 0.6%
     medium: 0.03, // 3%
     high: 0.06    // 6%
   },

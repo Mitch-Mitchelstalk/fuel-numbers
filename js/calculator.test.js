@@ -57,11 +57,11 @@ function testFarmExample() {
   assertEqual(adminCost, 1820, 'Farm: admin cost');
   
   const theftExposure = calculateTheftExposure(annualLitres, RATES.theft[theftRisk] * 100, dieselPrice);
-  assertEqual(theftExposure, 1200, 'Farm: theft exposure (48,000 L × 1% × $2.50)');
+  assertEqual(theftExposure, 720, 'Farm: theft exposure (48,000 L × 0.6% × $2.50)');
   
   // Scenario 1: Claims blank - total uses $0 for rebate missed
   const totalSavingsBlank = calculateTotalSavings(0, adminCost, 0, theftExposure);
-  assertEqual(totalSavingsBlank, 3020, 'Farm: total potential savings (blank claims: $0 + $1,820 + $0 + $1,200)');
+  assertEqual(totalSavingsBlank, 2540, 'Farm: total potential savings (blank claims: $0 + $1,820 + $0 + $720)');
   
   // Scenario 2: Gut-feel 80% - getting now $19,377, missed $4,844
   const gutfeelGettingNow = (80 / 100) * rebateShouldGet;
@@ -71,7 +71,7 @@ function testFarmExample() {
   assertEqual(Math.round(gutfeelMissed), 4844, 'Farm: gut feel rebate missed');
   
   const totalSavingsGutfeel = calculateTotalSavings(Math.round(gutfeelMissed), adminCost, 0, theftExposure);
-  assertEqual(totalSavingsGutfeel, 7864, 'Farm: total potential savings (gut feel 80%: $4,844 + $1,820 + $0 + $1,200)');
+  assertEqual(totalSavingsGutfeel, 7384, 'Farm: total potential savings (gut feel 80%: $4,844 + $1,820 + $0 + $720)');
   
   // Scenario 3: Actual $20,000 - getting now 82.6%, missed $4,221
   const actualGettingNow = 20000;
@@ -82,10 +82,10 @@ function testFarmExample() {
   assertEqual(actualMissed, 4221, 'Farm: actual rebate missed');
   
   const totalSavingsActual = calculateTotalSavings(actualMissed, adminCost, 0, theftExposure);
-  assertEqual(totalSavingsActual, 7241, 'Farm: total potential savings (actual $20,000: $4,221 + $1,820 + $0 + $1,200)');
+  assertEqual(totalSavingsActual, 6761, 'Farm: total potential savings (actual $20,000: $4,221 + $1,820 + $0 + $720)');
   
   // Scenario 4: Both actual and gut feel filled - total uses actual
-  assertEqual(totalSavingsActual, 7241, 'Farm: total uses actual when both filled');
+  assertEqual(totalSavingsActual, 6761, 'Farm: total uses actual when both filled');
 }
 
 // Test Case 2: Civil example
