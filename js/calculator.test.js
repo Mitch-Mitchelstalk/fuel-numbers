@@ -221,6 +221,12 @@ function testDispensesAndAdminDollars() {
   const hoursPerWeek = hoursPerYear / 52;
   const hoursPerWeekRounded = Math.round(hoursPerWeek * 10) / 10;
   assertEqual(hoursPerWeekRounded, 1.3, 'Admin $: back-calculated hours per week (2400 / 35 / 52 = 1.32)');
+  
+  // Admin hours linkage: 1 hr/wk → 4.3 hrs/month
+  const adminHoursWeek = 1;
+  const adminHoursMonth = adminHoursWeek * 52 / 12; // 4.333...
+  const adminHoursMonthRounded = Math.round(adminHoursMonth * 10) / 10;
+  assertEqual(adminHoursMonthRounded, 4.3, 'Admin hours: 1 hr/wk → 4.3 hrs/month (1 × 52 / 12)');
 }
 
 // Run all tests

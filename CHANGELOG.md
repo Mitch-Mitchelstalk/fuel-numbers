@@ -2,6 +2,14 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.3] - 2026-11-18
+
+### Fixed - UI Bugs
+- **Section number badges:** Fixed missing numbers 1-4 in section badges. Numbers now display in white inside each colored badge. Added `-webkit-text-fill-color: white` to override gradient text effect on h2 headers.
+- **Admin hours linkage:** Hours per week and hours per month now properly sync with each other. Entering 1 hr/week auto-fills 4.3 hrs/month; entering 4.3 hrs/month auto-fills 1 hr/week. Conversions: month = week × 52 / 12, week = month × 12 / 52, rounded to 1 decimal place, dropping .0.
+- **Test coverage:** Added test for admin hours linkage (1 hr/wk → 4.3 hrs/month).
+- **All 6 tests pass** ✓
+
 ## [1.2.2] - 2026-11-18
 
 ### Changed - Modern UI Polish

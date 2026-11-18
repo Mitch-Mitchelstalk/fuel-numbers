@@ -320,8 +320,15 @@ function setupAdminFields() {
     if (value) {
       state.adminHoursYear = value * 52;
       state.adminDollarsLastSource = 'hours';
+      
+      // Update hours per month (month = week × 52 / 12)
+      const hoursMonth = value * 52 / 12;
+      const rounded = Math.round(hoursMonth * 10) / 10;
+      const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+      adminMonth.value = formatted;
     } else {
       state.adminHoursYear = null;
+      adminMonth.value = '';
     }
     updateAdminDollarsFromHours();
     updateAllCalculations();
@@ -333,8 +340,15 @@ function setupAdminFields() {
     if (value) {
       state.adminHoursYear = value * 12;
       state.adminDollarsLastSource = 'hours';
+      
+      // Update hours per week (week = month × 12 / 52)
+      const hoursWeek = value * 12 / 52;
+      const rounded = Math.round(hoursWeek * 10) / 10;
+      const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+      adminWeek.value = formatted;
     } else {
       state.adminHoursYear = null;
+      adminWeek.value = '';
     }
     updateAdminDollarsFromHours();
     updateAllCalculations();
@@ -382,8 +396,10 @@ function setupAdminFields() {
         state.adminHoursYear = dollarsYear / state.adminRate;
         const hoursWeek = state.adminHoursYear / 52;
         const hoursMonth = state.adminHoursYear / 12;
-        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
-        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+        const roundedWeek = Math.round(hoursWeek * 10) / 10;
+        const roundedMonth = Math.round(hoursMonth * 10) / 10;
+        adminWeek.value = roundedWeek % 1 === 0 ? Math.round(roundedWeek) : roundedWeek;
+        adminMonth.value = roundedMonth % 1 === 0 ? Math.round(roundedMonth) : roundedMonth;
       }
       
       updateAllCalculations();
@@ -406,8 +422,10 @@ function setupAdminFields() {
         state.adminHoursYear = dollarsYear / state.adminRate;
         const hoursWeek = state.adminHoursYear / 52;
         const hoursMonth = state.adminHoursYear / 12;
-        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
-        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+        const roundedWeek = Math.round(hoursWeek * 10) / 10;
+        const roundedMonth = Math.round(hoursMonth * 10) / 10;
+        adminWeek.value = roundedWeek % 1 === 0 ? Math.round(roundedWeek) : roundedWeek;
+        adminMonth.value = roundedMonth % 1 === 0 ? Math.round(roundedMonth) : roundedMonth;
       }
       
       updateAllCalculations();
@@ -430,8 +448,10 @@ function setupAdminFields() {
         state.adminHoursYear = dollarsYear / state.adminRate;
         const hoursWeek = state.adminHoursYear / 52;
         const hoursMonth = state.adminHoursYear / 12;
-        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
-        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+        const roundedWeek = Math.round(hoursWeek * 10) / 10;
+        const roundedMonth = Math.round(hoursMonth * 10) / 10;
+        adminWeek.value = roundedWeek % 1 === 0 ? Math.round(roundedWeek) : roundedWeek;
+        adminMonth.value = roundedMonth % 1 === 0 ? Math.round(roundedMonth) : roundedMonth;
       }
       
       updateAllCalculations();
