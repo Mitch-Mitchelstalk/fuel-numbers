@@ -37,7 +37,8 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 - **Off-road %:** Input field with selectable percentage buttons (0%, 10%, 20%, ..., 100% in 10% increments) plus industry preset buttons (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%).
 - **Actual claim:** Two linked fields ($ per year ↔ % per year). Last-typed wins: whichever field is most recently typed stays fixed when R (rebate should get) changes, and its partner recalculates. Meaning: % = share of R they HAVE claimed; $ = R × % / 100; % = $ / R × 100.
 - **Gut feel:** Two linked fields ($ per year ↔ % per year). Same last-typed-wins behavior as actual claim.
-- Both claim pairs are always visible and editable. Rebate missed is calculated separately for each.
+- **Mutually exclusive:** Actual and Gut feel pairs are mutually exclusive. Typing into either field of one pair clears both fields of the other pair. No cross-calculation between pairs. Use whichever pair the rep last filled.
+- Both claim pairs are always visible and editable. Rebate missed is calculated from whichever pair is filled.
 - **Last-typed wins behavior:** Similar to diesel price in Section 1. When fuel use, diesel price, or off-road % changes (causing R to change), each claim pair's last-typed field stays fixed and the other recalculates. Example: gut % typed 90 → gut $ always = 90% of current R; if gut $ typed $20,000, then % recalculates when R changes to keep $ fixed at $20,000.
 - **Section result:** Shows "Rebate they should be getting" (R) calculated from total fuel litres (Section 1) and off-road %.
 - **Rebate missed:** Displays "Rebate missed: $X" under "Rebate they should be getting" with source label "(from actual claim)" or "(from gut feel)". Rebate missed = R - claimed $ (floored at 0). Shows actual claim if filled, otherwise gut feel. Displayed in soft red. Hidden when no claim data available.
@@ -58,7 +59,7 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 ### Results Panel (sticky right column)
 Always visible, shows all calculated values updating live:
 1. Rebate they should be getting (headline, per year)
-2. What they're getting now - shown if either claim filled. Main number: actual claim $ if filled, otherwise gut feel $. Subtitle shows which: "Actual: $X (Y%)" or "Gut feel: $X (Y%)"
+2. What they're getting now - shown if either claim filled. Main number: actual claim $ if filled, otherwise gut feel $. Subtitle shows which: "Actual claim" or "Gut feel"
 3. Rebate missed (actual claim) - shown if actual claim filled, with over-claim warning if applicable
 4. Rebate missed (gut feel) - shown if gut feel filled, with over-claim warning if applicable
 5. Admin cost per year - with subtitle showing hours per month (e.g., "· 4.3 hrs per month"), converted from entered unit (per week × 52 / 12, per month as entered), rounded to 1 decimal place, dropping .0

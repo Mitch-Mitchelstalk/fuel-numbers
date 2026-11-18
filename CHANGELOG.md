@@ -2,6 +2,32 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.4.0] - 2026-11-18
+
+### Changed - Claim Pairs Now Mutually Exclusive
+- **Actual claim and Gut feel are now mutually exclusive**
+- **Behavior:** Typing into either field of one pair clears both fields of the other pair
+  - Type in Actual $ or % → Gut feel $ and % both clear
+  - Type in Gut feel $ or % → Actual $ and % both clear
+  - No cross-calculation between pairs
+- **Within each pair:** $ ↔ % linking and last-typed wins behavior unchanged from v1.3.0
+- **Results:** Use whichever pair is filled (only one can be filled at a time now)
+- **"What they're getting now" subtitle:** Now shows "Actual claim" or "Gut feel" (simplified)
+- **Rationale:** Simpler model - rep uses either actual claim OR gut feel, not both
+
+### Updated
+- **SPEC.md:** Documented mutual exclusivity behavior
+- **Results panel description:** Updated subtitle format (no dollar/percent details)
+
+### Testing
+- All 7 automated tests pass
+- Browser-verified:
+  - Fill gut feel 90% → actual fields stay empty ✓
+  - Type actual $20,000 → gut feel fields clear ✓
+  - Type gut feel 75% → actual fields clear ✓
+  - "What they're getting now" shows correct source ✓
+  - Rebate missed uses correct pair ✓
+
 ## [1.3.1] - 2026-11-18
 
 ### Changed - Default Diesel Price

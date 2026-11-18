@@ -286,11 +286,19 @@ function setupRebateFields() {
   });
   
   // Actual claim pair ($ <-> %)
+  // Mutually exclusive with gut feel: typing in actual clears gut feel
   // Last-typed wins: whichever field is typed stays fixed when R changes
   actualDollars.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.actualDollars = value || null;
     state.actualLastTyped = 'dollars';
+    
+    // Clear gut feel fields (mutually exclusive)
+    state.gutfeelDollars = null;
+    state.gutfeelPercent = null;
+    state.gutfeelLastTyped = null;
+    gutfeelDollars.value = '';
+    gutfeelPercent.value = '';
     
     // Update % from $ (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
@@ -309,6 +317,13 @@ function setupRebateFields() {
     state.actualPercent = value || null;
     state.actualLastTyped = 'percent';
     
+    // Clear gut feel fields (mutually exclusive)
+    state.gutfeelDollars = null;
+    state.gutfeelPercent = null;
+    state.gutfeelLastTyped = null;
+    gutfeelDollars.value = '';
+    gutfeelPercent.value = '';
+    
     // Update $ from % (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
@@ -320,11 +335,19 @@ function setupRebateFields() {
   });
   
   // Gut feel pair ($ <-> %)
+  // Mutually exclusive with actual: typing in gut feel clears actual
   // Last-typed wins: whichever field is typed stays fixed when R changes
   gutfeelDollars.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.gutfeelDollars = value || null;
     state.gutfeelLastTyped = 'dollars';
+    
+    // Clear actual fields (mutually exclusive)
+    state.actualDollars = null;
+    state.actualPercent = null;
+    state.actualLastTyped = null;
+    actualDollars.value = '';
+    actualPercent.value = '';
     
     // Update % from $ (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
@@ -342,6 +365,13 @@ function setupRebateFields() {
     const value = parseNumberInput(e.target.value);
     state.gutfeelPercent = value || null;
     state.gutfeelLastTyped = 'percent';
+    
+    // Clear actual fields (mutually exclusive)
+    state.actualDollars = null;
+    state.actualPercent = null;
+    state.actualLastTyped = null;
+    actualDollars.value = '';
+    actualPercent.value = '';
     
     // Update $ from % (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
@@ -743,11 +773,11 @@ function updateTotalResults() {
     if (state.actualDollars) {
       gettingNowEl.textContent = formatCurrency(state.actualDollars);
       const actualPercent = rebateShouldGet > 0 ? ((state.actualDollars / rebateShouldGet) * 100).toFixed(1) : '0.0';
-      gettingNowNote.textContent = `Actual: ${formatCurrency(state.actualDollars)} (${actualPercent}%)`;
+      gettingNowNote.textContent = `Actual claim`;
     } else if (state.gutfeelDollars) {
       gettingNowEl.textContent = formatCurrency(state.gutfeelDollars);
       const gutfeelPercent = rebateShouldGet > 0 ? ((state.gutfeelDollars / rebateShouldGet) * 100).toFixed(1) : '0.0';
-      gettingNowNote.textContent = `Gut feel: ${formatCurrency(state.gutfeelDollars)} (${gutfeelPercent}%)`;
+      gettingNowNote.textContent = `Gut feel`;
     }
   } else {
     gettingNowItem.style.display = 'none';
