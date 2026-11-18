@@ -342,10 +342,8 @@ function setupAdminFields() {
     const value = parseFloat(e.target.value);
     if (value) {
       state.adminHoursYear = value * 52;
-      adminMonth.value = Math.round(value * 52 / 12);
     } else {
       state.adminHoursYear = null;
-      adminMonth.value = '';
     }
     updateAllCalculations();
   });
@@ -354,10 +352,8 @@ function setupAdminFields() {
     const value = parseFloat(e.target.value);
     if (value) {
       state.adminHoursYear = value * 12;
-      adminWeek.value = (value * 12 / 52).toFixed(1);
     } else {
       state.adminHoursYear = null;
-      adminWeek.value = '';
     }
     updateAllCalculations();
   });
@@ -392,10 +388,8 @@ function setupOperatorFields() {
     const value = parseFloat(e.target.value);
     if (value) {
       state.operatorHoursYear = value * 52;
-      operatorMonth.value = Math.round(value * 52 / 12);
     } else {
       state.operatorHoursYear = null;
-      operatorMonth.value = '';
     }
     updateAllCalculations();
   });
@@ -404,10 +398,8 @@ function setupOperatorFields() {
     const value = parseFloat(e.target.value);
     if (value) {
       state.operatorHoursYear = value * 12;
-      operatorWeek.value = (value * 12 / 52).toFixed(1);
     } else {
       state.operatorHoursYear = null;
-      operatorWeek.value = '';
     }
     updateAllCalculations();
   });
