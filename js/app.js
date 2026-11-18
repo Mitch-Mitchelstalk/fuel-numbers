@@ -358,7 +358,7 @@ function renderFuelUseStep(container) {
         <strong>Say this:</strong> We'll use this to calculate your rebate and potential savings.
       </div>
       
-      ${renderNavigation(true, false, false)}
+      ${renderNavigation(true, false, true)}
     </div>
   `;
   
@@ -474,7 +474,7 @@ function renderRebateStep(container) {
       
       <div id="claim-input-container"></div>
       
-      ${renderNavigation(true, false, false)}
+      ${renderNavigation(true, false, true)}
     </div>
   `;
   
@@ -641,7 +641,7 @@ function renderAdminStep(container) {
         <strong>Say this:</strong> This helps us calculate the time cost of manual fuel management.
       </div>
       
-      ${renderNavigation(true, false, false)}
+      ${renderNavigation(true, false, true)}
     </div>
   `;
   
@@ -732,7 +732,7 @@ function renderRiskStep(container) {
         <strong>Say this:</strong> This helps us calculate your fuel security exposure.
       </div>
       
-      ${renderNavigation(true, false, false)}
+      ${renderNavigation(true, false, true)}
     </div>
   `;
   

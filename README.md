@@ -30,38 +30,78 @@ The app calculates and displays:
 - **No backend** - Runs entirely in the browser, no data sent anywhere
 - **No indexing** - Includes robots.txt and noindex meta tag
 
-## Running Locally
+## Test it locally in Cursor
 
-### Prerequisites
+For Mitch (or anyone testing on Mac/Windows/Linux):
 
-- Python 3 (for the simple HTTP server) or PHP
-- Node.js (for running tests)
+### 1. Open the repo in Cursor
 
-### Start the app
-
-Using Python:
+Clone the repo and open it in Cursor:
 ```bash
-npm run serve
-# or
-python3 -m http.server 8000
+git clone https://github.com/Mitch-Mitchelstalk/fuel-numbers.git
+cd fuel-numbers
 ```
 
-Using PHP:
+Then open the `fuel-numbers` folder in Cursor.
+
+### 2. Start the app
+
+Open Cursor's terminal (View → Terminal or `` Ctrl+` ``) and run:
+
 ```bash
-npm run serve-alt
-# or
-php -S localhost:8000
+npm start
 ```
 
-Then open http://localhost:8000 in your browser.
+This starts a local web server. You'll see:
+```
+Serving HTTP on 0.0.0.0 port 8000...
+```
 
-### Run tests
+**Open the app:** Go to http://localhost:8000 in your browser (Chrome, Safari, Firefox, etc.)
+
+**To stop the server:** Press `Ctrl+C` in the terminal
+
+### 3. Run the tests
+
+In the terminal, run:
 
 ```bash
 npm test
-# or
-node js/calculator.test.js
 ```
+
+You should see:
+```
+✓ Test Case 1: Farm example
+✓ Test Case 2: Civil example
+✓ Test Case 3: Linked fields
+✓ Test Case 4: Dispensed guard
+✓ Test Case 5: Skips
+✓ Test Case 6: Over-claim guard
+
+=== Test Results: 6/6 passed ===
+```
+
+### Prerequisites
+
+- **Node.js** (likely already installed) - check with `node --version`
+- **Python 3** (built into macOS) - or PHP as a fallback
+
+That's it! No npm install needed, no other global tools.
+
+### Troubleshooting
+
+**"npm: command not found"**
+- Install Node.js from https://nodejs.org (LTS version recommended)
+
+**Port 8000 already in use?**
+- Change the port: `python3 -m http.server 8001` and open http://localhost:8001
+
+**Can't I just double-click index.html?**
+- You can, but JavaScript modules won't load due to browser security (CORS). The server fixes this.
+
+---
+
+## Test Cases
 
 All six test cases from the spec must pass:
 1. Farm example (blank, 80% gut-feel, $20,000 claimed)
@@ -127,12 +167,20 @@ All formulas use annual figures:
 
 ## Browser Compatibility
 
-Tested in:
+Works in all modern browsers:
 - Chrome/Edge (latest)
 - Safari (latest)
 - Firefox (latest)
 - Mobile Safari (iOS)
 - Chrome Mobile (Android)
+
+## Technical Notes
+
+- Pure HTML/CSS/JavaScript (ES6 modules)
+- No framework dependencies
+- No build step required
+- Mobile-first responsive design
+- Static files, no backend needed
 
 ## License
 
