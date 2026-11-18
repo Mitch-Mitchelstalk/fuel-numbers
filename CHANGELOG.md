@@ -2,6 +2,40 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.1] - 2026-11-18
+
+### Fixed - Total Always Visible at Page Load
+
+**Problem:**
+- At 1280x700 with page scrolled to top (scrollTop 0), Total potential savings was cut off below the fold
+- Large header (2.5rem padding, 2.25rem h1) pushed Results panel down
+- Total not visible at page load without scrolling
+
+**Solution: Compact Slim Header**
+- Reduced header to slim bar: 0.75rem padding (from 2.5rem)
+- H1: 1.25rem font (from 2.25rem)
+- Subtitle: inline 0.875rem (from separate line)
+- Header height: 52px (from ~140px)
+
+**Result:**
+- ✅ Total fully visible at scrollTop 0 at 1280x700 (top: 556px, bottom: 658px, viewport: 700px)
+- ✅ Total visible while scrolling
+- ✅ Header compact but readable
+- ✅ More vertical space for Results panel
+
+### Code Changes
+- **CSS:** Header styling compacted
+  - `header`: padding 0.75rem 1.5rem (from 2.5rem 2rem)
+  - `header h1`: 1.25rem font, inline, margin 0 (from 2.25rem, block, margin-bottom 0.5rem)
+  - `header .subtitle`: new inline style, 0.875rem font, margin-left 0.75rem
+
+### Testing
+- All 7 automated tests pass ✓
+- Browser-verified at 1280x700:
+  - Total fully visible at scrollTop 0 ✓
+  - Total fully visible when scrolled ✓
+  - Header height: 52px ✓
+
 ## [1.6.0] - 2026-11-18
 
 ### Changed - Compact Results Panel (No Scrolling)
