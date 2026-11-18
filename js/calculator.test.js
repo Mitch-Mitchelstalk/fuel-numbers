@@ -12,6 +12,7 @@ import {
   calculateAdminCost,
   calculateOperatorTimeCost,
   calculateTheftExposure,
+  calculateTheftLitres,
   calculateTotalSavings,
   parseNumberInput,
   formatNumberInput
@@ -255,6 +256,33 @@ function testThousandsSeparators() {
   assertEqual(noCommas, 48000, 'Parse without commas: "48000" → 48000');
 }
 
+// Test Case 8: Theft litres calculation
+function testTheftLitres() {
+  // Farm example: 48,000 L × 0.6% = 288 L
+  const farmLitres = calculateTheftLitres(48000, 0.6);
+  assertEqual(farmLitres, 288, 'Farm: theft litres (48,000 L × 0.6% = 288 L)');
+  
+  // Civil example: 120,000 L × 0.6% = 720 L
+  const civilLitres = calculateTheftLitres(120000, 0.6);
+  assertEqual(civilLitres, 720, 'Civil: theft litres (120,000 L × 0.6% = 720 L)');
+  
+  // Medium risk: 48,000 L × 3% = 1,440 L
+  const mediumLitres = calculateTheftLitres(48000, 3);
+  assertEqual(mediumLitres, 1440, 'Medium risk: theft litres (48,000 L × 3% = 1,440 L)');
+  
+  // High risk: 48,000 L × 6% = 2,880 L
+  const highLitres = calculateTheftLitres(48000, 6);
+  assertEqual(highLitres, 2880, 'High risk: theft litres (48,000 L × 6% = 2,880 L)');
+  
+  // Zero theft
+  const zeroLitres = calculateTheftLitres(48000, 0);
+  assertEqual(zeroLitres, 0, 'Zero theft: 48,000 L × 0% = 0 L');
+  
+  // Null fuel (no data)
+  const nullFuel = calculateTheftLitres(null, 0.6);
+  assertEqual(nullFuel, 0, 'Null fuel returns 0');
+}
+
 // Run all tests
 export function runAllTests() {
   console.log('\n=== Running Fuel Numbers Calculator Tests ===\n');
@@ -266,7 +294,8 @@ export function runAllTests() {
     runTest('Test Case 4: Skips', testSkips),
     runTest('Test Case 5: Over-claim guard', testOverClaimGuard),
     runTest('Test Case 6: Dispenses default and admin $ linkage', testDispensesAndAdminDollars),
-    runTest('Test Case 7: Thousands separator parse/format', testThousandsSeparators)
+    runTest('Test Case 7: Thousands separator parse/format', testThousandsSeparators),
+    runTest('Test Case 8: Theft litres calculation', testTheftLitres)
   ];
   
   const passed = results.filter(r => r).length;

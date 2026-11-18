@@ -13,6 +13,7 @@ import {
   calculateAdminCost,
   calculateOperatorTimeCost,
   calculateTheftExposure,
+  calculateTheftLitres,
   calculateTotalSavings,
   isDispensedMoreThanTotal,
   isOverClaimed,
@@ -836,11 +837,20 @@ function updateSectionResults() {
   
   // Section 4: Theft
   const theftEl = document.getElementById('result-theft');
+  const theftSubtitleEl = document.getElementById('theft-subtitle');
+  const theftHintEl = document.getElementById('theft-litres-hint');
+  
   if (state.fuelLitresYear) {
     const theft = calculateTheftExposure(state.fuelLitresYear, state.theftPercent, state.dieselPrice);
+    const theftLitres = calculateTheftLitres(state.fuelLitresYear, state.theftPercent);
+    
     theftEl.textContent = formatCurrency(theft);
+    theftSubtitleEl.textContent = `per year · ${formatNumber(Math.round(theftLitres))} L`;
+    theftHintEl.textContent = `≈ ${formatNumber(Math.round(theftLitres))} L per year`;
   } else {
     theftEl.textContent = '—';
+    theftSubtitleEl.textContent = '—';
+    theftHintEl.textContent = '—';
   }
 }
 
@@ -960,7 +970,17 @@ function updateTotalResults() {
   // Theft (uses total fuel from Section 1)
   const theftExposure = state.fuelLitresYear ?
     calculateTheftExposure(state.fuelLitresYear, state.theftPercent, state.dieselPrice) : 0;
+  const theftLitres = state.fuelLitresYear ?
+    calculateTheftLitres(state.fuelLitresYear, state.theftPercent) : 0;
+  
   document.getElementById('total-theft').textContent = theftExposure ? formatCurrency(theftExposure) : '—';
+  
+  const totalTheftNote = document.getElementById('total-theft-note');
+  if (theftLitres > 0) {
+    totalTheftNote.textContent = `per year · ${formatNumber(Math.round(theftLitres))} L`;
+  } else {
+    totalTheftNote.textContent = 'per year';
+  }
   
   // Total savings: uses actual if filled, otherwise gut feel, otherwise $0
   let rebateMissedForTotal = 0;

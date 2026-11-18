@@ -2,6 +2,99 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.6] - 2026-11-18
+
+### Added - Theft Litres Display
+
+**Show Litres Lost to Theft for Reference**
+- ✅ **Results panel:** Theft exposure subtitle now shows litres lost (e.g., "per year · 288 L")
+- ✅ **Section 4:** Theft % input now shows estimated litres hint below field (e.g., "≈ 288 L per year")
+- ✅ **Live updates:** Both displays update in real-time as user changes fuel usage or theft %
+- ✅ **Formatted output:** Litres shown with thousands separators, rounded to whole numbers
+
+**Calculation:**
+- Theft litres = Annual litres × Theft %
+- Example: 48,000 L × 0.6% = 288 L
+- Example: 48,000 L × 3% = 1,440 L
+- Example: 120,000 L × 0.6% = 720 L
+
+**Why Add Litres:**
+- **Physical context:** Dollar amounts abstract, litres concrete (e.g., "288 L = ~6 drums")
+- **Operational impact:** Helps visualize scale of theft exposure
+- **Verification aid:** User can sanity-check theft % against physical losses
+- **Conversation starter:** "You're potentially losing 1,440 litres per year" resonates more than "$3,600"
+
+**User Experience:**
+- ✅ **Section 4 hint:** Shows live estimate below theft % input (always visible)
+- ✅ **Results subtitle:** Shows calculated litres alongside dollar amount
+- ✅ **Both displays sync:** Change fuel or theft % → both litres update immediately
+- ✅ **Thousands separators:** 1,440 L (not 1440 L) for readability
+- ✅ **Whole numbers:** Rounded litres (288 L, not 288.0 L)
+
+**Display Locations:**
+
+1. **Section 4 (below Theft % input):**
+   ```
+   Theft % (editable) [ESTIMATE]
+   [0.6]
+   ≈ 288 L per year
+   ```
+
+2. **Section 4 section result:**
+   ```
+   Theft exposure per year: $720
+   per year · 288 L
+   ```
+
+3. **Results panel (Theft exposure item):**
+   ```
+   Theft exposure
+   $720
+   per year · 288 L
+   ```
+
+**Implementation:**
+
+**calculator.js:**
+- Added `calculateTheftLitres(totalAnnualLitres, theftPercent)` function
+- Returns: `totalAnnualLitres × (theftPercent / 100)`
+- Returns 0 if fuel or theft % is null/undefined
+
+**app.js:**
+- Imported `calculateTheftLitres`
+- Updated `updateSectionResults()`:
+  - Calculates theft litres alongside theft exposure
+  - Updates `#theft-subtitle` with "per year · {litres} L"
+  - Updates `#theft-litres-hint` with "≈ {litres} L per year"
+- Updated `updateTotalResults()`:
+  - Calculates theft litres for Results panel
+  - Updates `#total-theft-note` with "per year · {litres} L"
+  - Falls back to "per year" if litres = 0
+
+**index.html:**
+- Added `<div class="field-hint" id="theft-litres-hint">` below theft % input in Section 4
+- Added `<div class="result-subtitle" id="theft-subtitle">` in Section 4 result
+- Added `id="total-theft-note"` to Results panel theft note (changed from static text)
+
+**styles.css:**
+- Added `.field-hint`: small italic gray text below input fields
+- Added `.result-subtitle`: small italic gray text below section result values
+
+**Testing:**
+
+Added Test Case 8: Theft litres calculation
+- ✅ Farm example: 48,000 L × 0.6% = 288 L
+- ✅ Civil example: 120,000 L × 0.6% = 720 L
+- ✅ Medium risk: 48,000 L × 3% = 1,440 L
+- ✅ High risk: 48,000 L × 6% = 2,880 L
+- ✅ Zero theft: 48,000 L × 0% = 0 L
+- ✅ Null fuel: returns 0
+
+**All 8 automated tests pass ✓**
+
+**Updated:**
+- **CHANGELOG.md:** This entry
+
 ## [1.6.5] - 2026-11-18
 
 ### Changed - Section 4 Layout Reorganization

@@ -139,6 +139,15 @@ export function calculateTheftExposure(dispensedAnnualLitres, theftPercent, dies
 }
 
 /**
+ * Calculate theft litres lost (annual)
+ * Litres = total annual litres × theft %
+ */
+export function calculateTheftLitres(totalAnnualLitres, theftPercent) {
+  if (!totalAnnualLitres || theftPercent == null) return 0;
+  return totalAnnualLitres * (theftPercent / 100);
+}
+
+/**
  * Calculate total potential savings (annual)
  * Total = rebate being missed + admin + operator time + theft
  * Round each line to whole dollars before adding

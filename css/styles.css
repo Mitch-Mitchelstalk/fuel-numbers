@@ -250,6 +250,13 @@ header p {
   letter-spacing: 0.01em;
 }
 
+.field-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
 .form-input {
   width: 100%;
   padding: 0.625rem 0.875rem;
@@ -746,6 +753,13 @@ header p {
   font-weight: 700;
   color: var(--text-primary);
   font-size: 1.125rem;
+}
+
+.result-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 /* Results Panel (Sticky) */
