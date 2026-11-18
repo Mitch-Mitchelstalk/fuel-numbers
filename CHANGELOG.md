@@ -2,6 +2,17 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.5] - 2026-11-18
+
+### Changed - Green Total Savings Card
+- **Total potential savings card:** Now displays in confident green instead of red
+  - Text color: #067647 (confident readable green)
+  - Background: #ECFDF3 (light green tint) with gradient to #F0FDF4
+  - Border: #6EE7B7 (green border)
+  - Rationale: Green represents positive outcome (savings opportunity), not a cost
+- **Individual money-missing lines:** Remain in soft red (#B42318) as they represent costs/losses
+- **Visual hierarchy:** Total savings card remains the most prominent result
+
 ## [1.2.4] - 2026-11-18
 
 ### Changed - Section Backgrounds

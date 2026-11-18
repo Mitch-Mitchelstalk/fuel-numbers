@@ -21,6 +21,9 @@
   --money-missing-color: #B42318; /* Muted crimson for costs */
   --money-missing-bg: #FEF3F2; /* Light rose tint */
   --money-missing-border: #FECDCA;
+  --savings-color: #067647; /* Confident green for total savings */
+  --savings-bg: #ECFDF3; /* Light green tint */
+  --savings-border: #6EE7B7; /* Green border */
   --neutral-color: #0F172A;
   --info-color: #0284C7;
   --info-bg: #F0F9FF;
@@ -584,10 +587,10 @@ header p {
   color: var(--money-missing-color);
 }
 
-/* Total savings - most prominent */
+/* Total savings - most prominent (green) */
 .result-item.total {
-  background: linear-gradient(135deg, #FEE2E2 0%, #FEF3F2 100%);
-  border: 2px solid var(--money-missing-color);
+  background: linear-gradient(135deg, var(--savings-bg) 0%, #F0FDF4 100%);
+  border: 2px solid var(--savings-border);
   box-shadow: var(--shadow-md);
   padding: 1.5rem;
 }
@@ -602,7 +605,7 @@ header p {
 
 .result-item.total .result-value {
   font-size: 2.25rem;
-  color: var(--money-missing-color);
+  color: var(--savings-color);
   font-weight: 800;
 }
 
