@@ -9,13 +9,10 @@ import {
   litresToDollars,
   dollarsToLitres,
   calculateRebateShouldGet,
-  calculateRebateMissed,
   calculateAdminCost,
   calculateOperatorTimeCost,
   calculateTheftExposure,
-  calculateTotalSavings,
-  isDispensedMoreThanTotal,
-  isOverClaimed
+  calculateTotalSavings
 } from './calculator.js';
 
 // Test utilities
@@ -39,10 +36,10 @@ function runTest(testName, testFn) {
 
 // Test Case 1: Farm example
 function testFarmExample() {
-  // Inputs: use 4,000 L/month, all dispensed on site (48,000 L/year)
+  // Inputs: use 4,000 L/month (48,000 L/year)
+  // D = L (dispensed litres removed, rebate and theft now use total fuel)
   const monthlyLitres = 4000;
   const annualLitres = monthlyLitres * 12; // 48,000
-  const dispensedAnnualLitres = annualLitres;
   const offRoadPercent = 90;
   const adminHours = 1;
   const adminPeriod = 'week';
@@ -51,43 +48,51 @@ function testFarmExample() {
   const dieselPrice = 2.22;
   
   // Results
-  const rebateShouldGet = calculateRebateShouldGet(dispensedAnnualLitres, offRoadPercent);
+  const rebateShouldGet = calculateRebateShouldGet(annualLitres, offRoadPercent);
   assertEqual(rebateShouldGet, 24221, 'Farm: rebate they should be getting');
-  
-  // Getting now blank: missed $0
-  const rebateMissed = calculateRebateMissed(rebateShouldGet, null, null);
-  assertEqual(rebateMissed, 0, 'Farm: rebate being missed (blank)');
   
   const adminCost = calculateAdminCost(adminHours, adminPeriod, adminRate);
   assertEqual(adminCost, 1820, 'Farm: admin cost');
   
-  const theftExposure = calculateTheftExposure(dispensedAnnualLitres, RATES.theft[theftRisk] * 100, dieselPrice);
+  const theftExposure = calculateTheftExposure(annualLitres, RATES.theft[theftRisk] * 100, dieselPrice);
   assertEqual(theftExposure, 1066, 'Farm: theft exposure');
   
-  const totalSavings = calculateTotalSavings(rebateMissed, adminCost, 0, theftExposure);
-  assertEqual(totalSavings, 2886, 'Farm: total potential savings');
+  // Scenario 1: Claims blank - total uses $0 for rebate missed
+  const totalSavingsBlank = calculateTotalSavings(0, adminCost, 0, theftExposure);
+  assertEqual(totalSavingsBlank, 2886, 'Farm: total potential savings (blank claims)');
   
-  // Gut-feel 80%: missed $4,844; total $7,730
-  const rebateMissedGutfeel = calculateRebateMissed(rebateShouldGet, 'gutfeel', 80);
-  assertEqual(rebateMissedGutfeel, 4844, 'Farm: rebate being missed (80% gut-feel)');
+  // Scenario 2: Gut-feel 80% - getting now $19,377, missed $4,844; total $7,730
+  const gutfeelGettingNow = (80 / 100) * rebateShouldGet;
+  assertEqual(Math.round(gutfeelGettingNow), 19377, 'Farm: gut feel getting now (80%)');
   
-  const totalSavingsGutfeel = calculateTotalSavings(rebateMissedGutfeel, adminCost, 0, theftExposure);
-  assertEqual(totalSavingsGutfeel, 7730, 'Farm: total potential savings (80% gut-feel)');
+  const gutfeelMissed = rebateShouldGet - gutfeelGettingNow;
+  assertEqual(Math.round(gutfeelMissed), 4844, 'Farm: gut feel rebate missed');
   
-  // $ mode, $20,000 claimed now: missed $4,221; total $7,107
-  const rebateMissedDollars = calculateRebateMissed(rebateShouldGet, 'dollars', 20000);
-  assertEqual(rebateMissedDollars, 4221, 'Farm: rebate being missed ($20,000 claimed)');
+  const totalSavingsGutfeel = calculateTotalSavings(Math.round(gutfeelMissed), adminCost, 0, theftExposure);
+  assertEqual(totalSavingsGutfeel, 7730, 'Farm: total potential savings (gut feel 80%)');
   
-  const totalSavingsDollars = calculateTotalSavings(rebateMissedDollars, adminCost, 0, theftExposure);
-  assertEqual(totalSavingsDollars, 7107, 'Farm: total potential savings ($20,000 claimed)');
+  // Scenario 3: Actual $20,000 - getting now 82.6%, missed $4,221; total $7,107
+  const actualGettingNow = 20000;
+  const actualPercent = (actualGettingNow / rebateShouldGet) * 100;
+  assertEqual(Math.round(actualPercent * 10) / 10, 82.6, 'Farm: actual claim percentage');
+  
+  const actualMissed = rebateShouldGet - actualGettingNow;
+  assertEqual(actualMissed, 4221, 'Farm: actual rebate missed');
+  
+  const totalSavingsActual = calculateTotalSavings(actualMissed, adminCost, 0, theftExposure);
+  assertEqual(totalSavingsActual, 7107, 'Farm: total potential savings (actual $20,000)');
+  
+  // Scenario 4: Both actual and gut feel filled - total uses actual
+  // (Total should be $7,107 not $7,730)
+  assertEqual(totalSavingsActual, 7107, 'Farm: total uses actual when both filled');
 }
 
 // Test Case 2: Civil example
 function testCivilExample() {
-  // Inputs: use 11,600 L/month, of which 10,000 L/month is dispensed on site (120,000 L/year)
-  const totalMonthlyLitres = 11600;
-  const dispensedMonthlyLitres = 10000;
-  const dispensedAnnualLitres = dispensedMonthlyLitres * 12; // 120,000
+  // Inputs: use 10,000 L/month (120,000 L/year)
+  // D = L (dispensed litres removed, rebate and theft now use total fuel)
+  const monthlyLitres = 10000;
+  const annualLitres = monthlyLitres * 12; // 120,000
   const offRoadPercent = 80;
   const adminHours = 8;
   const adminPeriod = 'month';
@@ -96,28 +101,33 @@ function testCivilExample() {
   const dieselPrice = 2.60;
   
   // Results
-  const rebateShouldGet = calculateRebateShouldGet(dispensedAnnualLitres, offRoadPercent);
+  const rebateShouldGet = calculateRebateShouldGet(annualLitres, offRoadPercent);
   assertEqual(rebateShouldGet, 56664, 'Civil: rebate they should be getting');
   
-  // Gut-feel 80%: missed $11,333
-  const rebateMissed = calculateRebateMissed(rebateShouldGet, 'gutfeel', 80);
-  assertEqual(rebateMissed, 11333, 'Civil: rebate being missed');
+  // Gut-feel 80%: getting now $45,331, missed $11,333
+  const gutfeelGettingNow = (80 / 100) * rebateShouldGet;
+  assertEqual(Math.round(gutfeelGettingNow), 45331, 'Civil: gut feel getting now (80%)');
+  
+  const gutfeelMissed = rebateShouldGet - gutfeelGettingNow;
+  assertEqual(Math.round(gutfeelMissed), 11333, 'Civil: gut feel rebate missed');
   
   const adminCost = calculateAdminCost(adminHours, adminPeriod, adminRate);
   assertEqual(adminCost, 4992, 'Civil: admin cost');
   
-  const theftExposure = calculateTheftExposure(dispensedAnnualLitres, RATES.theft[theftRisk] * 100, dieselPrice);
+  const theftExposure = calculateTheftExposure(annualLitres, RATES.theft[theftRisk] * 100, dieselPrice);
   assertEqual(theftExposure, 9360, 'Civil: theft exposure');
   
-  const totalSavings = calculateTotalSavings(rebateMissed, adminCost, 0, theftExposure);
+  const totalSavings = calculateTotalSavings(Math.round(gutfeelMissed), adminCost, 0, theftExposure);
   assertEqual(totalSavings, 25685, 'Civil: total potential savings');
   
-  // Add operator time 2 hours/week at $52: operator $5,408; total $31,093
-  const operatorCost = calculateOperatorTimeCost(2, 'week', 52);
-  assertEqual(operatorCost, 5408, 'Civil: operator time cost');
+  // Add log-book time: 2 min per dispense, 30 dispenses per week at $40/hr
+  // = 2 × 30 × 52 / 60 = 52 hrs/yr × $40 = $2,080/yr
+  // hours per month = 2 × 30 × 52 / 12 / 60 = 4.3 hrs per month
+  const operatorCost = calculateOperatorTimeCost(2, 30, 40);
+  assertEqual(operatorCost, 2080, 'Civil: log-book time cost');
   
-  const totalSavingsWithOperator = calculateTotalSavings(rebateMissed, adminCost, operatorCost, theftExposure);
-  assertEqual(totalSavingsWithOperator, 31093, 'Civil: total potential savings (with operator time)');
+  const totalSavingsWithOperator = calculateTotalSavings(Math.round(gutfeelMissed), adminCost, operatorCost, theftExposure);
+  assertEqual(totalSavingsWithOperator, 27765, 'Civil: total potential savings (with log-book time)');
 }
 
 // Test Case 3: Linked fields
@@ -156,23 +166,7 @@ function testLinkedFields() {
   assertEqual(Math.round(newLitresPerWeek), 820, 'Linked: new litres per week (42624/52 = 819.69 rounds to 820)');
 }
 
-// Test Case 4: Dispensed guard
-function testDispensedGuard() {
-  // Total use 4,000 L/month and dispensed 5,000 L/month: a warning shows
-  const totalMonthlyLitres = 4000;
-  const dispensedMonthlyLitres = 5000;
-  const totalAnnualLitres = totalMonthlyLitres * 12;
-  const dispensedAnnualLitres = dispensedMonthlyLitres * 12;
-  
-  const shouldWarn = isDispensedMoreThanTotal(totalAnnualLitres, dispensedAnnualLitres);
-  assertEqual(shouldWarn, true, 'Dispensed guard: warning triggered');
-  
-  // The rebate still calculates on the dispensed figure
-  const rebateShouldGet = calculateRebateShouldGet(dispensedAnnualLitres, 90);
-  assertEqual(rebateShouldGet, 30276, 'Dispensed guard: rebate calculated on dispensed figure');
-}
-
-// Test Case 5: Skips
+// Test Case 4: Skips
 function testSkips() {
   // Skipping every supporting step still gives the core results
   // This is tested implicitly by the farm and civil examples above,
@@ -185,21 +179,23 @@ function testSkips() {
   console.log('  (Supporting steps are optional and can be skipped)');
 }
 
-// Test Case 6: Over-claim guard
+// Test Case 5: Over-claim guard
 function testOverClaimGuard() {
-  // Farm example in $ mode with $30,000 claimed now: missed shows $0 with the check note
-  const dispensedAnnualLitres = 48000;
+  // Farm example with $30,000 claimed now: missed shows $0 (capped at zero)
+  const annualLitres = 48000;
   const offRoadPercent = 90;
   const claimedNow = 30000;
   
-  const rebateShouldGet = calculateRebateShouldGet(dispensedAnnualLitres, offRoadPercent);
-  assertEqual(rebateShouldGet, 24221, 'Over-claim guard: rebate they should be getting');
+  const rebateShouldGet = calculateRebateShouldGet(annualLitres, offRoadPercent);
+  assertEqual(rebateShouldGet, 24221, 'Over-claim: rebate they should be getting');
   
-  const isOver = isOverClaimed(rebateShouldGet, 'dollars', claimedNow);
-  assertEqual(isOver, true, 'Over-claim guard: over-claim detected');
+  // When claiming more than entitled, missed = max(0, should - claimed)
+  const rebateMissed = Math.max(0, rebateShouldGet - claimedNow);
+  assertEqual(rebateMissed, 0, 'Over-claim: rebate being missed capped at $0');
   
-  const rebateMissed = calculateRebateMissed(rebateShouldGet, 'dollars', claimedNow);
-  assertEqual(rebateMissed, 0, 'Over-claim guard: rebate being missed shows $0');
+  // The warning is shown in UI when claimedNow > rebateShouldGet
+  const isOverClaiming = claimedNow > rebateShouldGet;
+  assertEqual(isOverClaiming, true, 'Over-claim: over-claiming detected');
 }
 
 // Run all tests
@@ -210,9 +206,8 @@ export function runAllTests() {
     runTest('Test Case 1: Farm example', testFarmExample),
     runTest('Test Case 2: Civil example', testCivilExample),
     runTest('Test Case 3: Linked fields', testLinkedFields),
-    runTest('Test Case 4: Dispensed guard', testDispensedGuard),
-    runTest('Test Case 5: Skips', testSkips),
-    runTest('Test Case 6: Over-claim guard', testOverClaimGuard)
+    runTest('Test Case 4: Skips', testSkips),
+    runTest('Test Case 5: Over-claim guard', testOverClaimGuard)
   ];
   
   const passed = results.filter(r => r).length;

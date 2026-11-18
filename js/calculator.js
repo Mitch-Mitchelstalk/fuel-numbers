@@ -120,11 +120,12 @@ export function calculateAdminCost(hours, period, hourlyRate) {
  * Calculate operator time cost (annual)
  * Cost = hours × (52 if per week, 12 if per month) × $/hour
  */
-export function calculateOperatorTimeCost(hours, period, hourlyRate) {
-  if (!hours || hours <= 0) return 0;
+export function calculateOperatorTimeCost(minutesPerDispense, dispensesPerWeek, hourlyRate) {
+  if (!minutesPerDispense || !dispensesPerWeek || minutesPerDispense <= 0 || dispensesPerWeek <= 0) return 0;
   
-  const multiplier = period === 'week' ? 52 : 12;
-  return Math.round(hours * multiplier * hourlyRate);
+  // Formula: minutes per dispense × dispenses per week × 52 / 60 × rate
+  const hoursPerYear = minutesPerDispense * dispensesPerWeek * 52 / 60;
+  return Math.round(hoursPerYear * hourlyRate);
 }
 
 /**

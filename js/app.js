@@ -28,23 +28,21 @@ const state = {
   dieselPrice: RATES.defaultDiesel,
   dieselPriceModified: false,
   
-  // Dispensed
-  dispensedLitresYear: null,
-  dispensedModified: false,
-  
   // Rebate
   offRoadPercent: null,
-  offRoadModified: false,
-  claimMode: null,
-  claimValue: null,
+  actualDollars: null,
+  actualPercent: null,
+  gutfeelDollars: null,
+  gutfeelPercent: null,
   
   // Admin
   adminHoursYear: null,
   adminRate: RATES.defaultHourlyRate,
   adminRateModified: false,
   
-  // Operator
-  operatorHoursYear: null,
+  // Operator (log-book time)
+  operatorMinutesPerDispense: null,
+  operatorDispensesPerWeek: null,
   operatorRate: RATES.defaultHourlyRate,
   operatorRateModified: false,
   
@@ -56,7 +54,6 @@ const state = {
 // Initialize app
 function init() {
   setupFuelFields();
-  setupDispensedFields();
   setupRebateFields();
   setupAdminFields();
   setupOperatorFields();
@@ -183,173 +180,117 @@ function updateFuelFieldsFromAnnual() {
   document.getElementById('fuel-dollars-week').value = Math.round(dollarsWeek);
   document.getElementById('fuel-dollars-month').value = Math.round(dollarsMonth);
   document.getElementById('fuel-dollars-year').value = Math.round(dollarsYear);
-  
-  // Update dispensed if not modified
-  if (!state.dispensedModified && state.fuelLitresYear) {
-    state.dispensedLitresYear = state.fuelLitresYear;
-    updateDispensedFieldsFromAnnual();
-  }
 }
 
-// Dispensed fields
-function setupDispensedFields() {
-  const dispensedWeek = document.getElementById('dispensed-litres-week');
-  const dispensedMonth = document.getElementById('dispensed-litres-month');
-  const dispensedYear = document.getElementById('dispensed-litres-year');
-  
-  dispensedWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      state.dispensedLitresYear = convertFuelUsage(value, 'week', 'year');
-      state.dispensedModified = true;
-      updateDispensedFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-  
-  dispensedMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      state.dispensedLitresYear = convertFuelUsage(value, 'month', 'year');
-      state.dispensedModified = true;
-      updateDispensedFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-  
-  dispensedYear.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      state.dispensedLitresYear = value;
-      state.dispensedModified = true;
-      updateDispensedFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-}
-
-function updateDispensedFieldsFromAnnual() {
-  if (!state.dispensedLitresYear) return;
-  
-  const dispensedWeek = convertFuelUsage(state.dispensedLitresYear, 'year', 'week');
-  const dispensedMonth = convertFuelUsage(state.dispensedLitresYear, 'year', 'month');
-  
-  document.getElementById('dispensed-litres-week').value = Math.round(dispensedWeek);
-  document.getElementById('dispensed-litres-month').value = Math.round(dispensedMonth);
-  document.getElementById('dispensed-litres-year').value = Math.round(state.dispensedLitresYear);
-  
-  // Hide estimate badge
-  if (state.dispensedModified) {
-    document.getElementById('dispensed-badge').style.display = 'none';
-  }
-  
-  // Check warning
-  const warning = document.getElementById('dispensed-warning');
-  if (state.fuelLitresYear && isDispensedMoreThanTotal(state.fuelLitresYear, state.dispensedLitresYear)) {
-    warning.style.display = 'block';
-  } else {
-    warning.style.display = 'none';
-  }
-}
-
-// Rebate fields
+// Rebate fields (off-road %, actual claim, gut feel)
 function setupRebateFields() {
   const offRoadPercent = document.getElementById('offroad-percent');
-  const industryPreset = document.getElementById('industry-preset');
-  const claimMode = document.getElementById('claim-mode');
+  const actualDollars = document.getElementById('actual-dollars');
+  const actualPercent = document.getElementById('actual-percent');
+  const gutfeelDollars = document.getElementById('gutfeel-dollars');
+  const gutfeelPercent = document.getElementById('gutfeel-percent');
   
-  // Off-road %
+  // Off-road % input field
   offRoadPercent.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     state.offRoadPercent = value;
-    state.offRoadModified = true;
-    document.getElementById('offroad-badge').style.display = 'none';
+    updateOffRoadButtonStates();
     updateAllCalculations();
   });
   
-  // Industry preset
-  industryPreset.addEventListener('change', (e) => {
-    const industry = e.target.value;
-    if (industry && RATES.offRoadPresets[industry] !== undefined) {
-      state.offRoadPercent = RATES.offRoadPresets[industry] * 100;
-      offRoadPercent.value = state.offRoadPercent;
-      state.offRoadModified = false;
-      document.getElementById('offroad-badge').style.display = 'inline-block';
-      updateAllCalculations();
-    }
-  });
-  
-  // Quick picks
-  document.querySelectorAll('.btn-quick').forEach(btn => {
+  // Off-road % buttons (0-100 in 10% increments)
+  document.querySelectorAll('.btn-percent').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const value = parseFloat(e.target.dataset.value);
       state.offRoadPercent = value;
       offRoadPercent.value = value;
-      state.offRoadModified = true;
-      document.getElementById('offroad-badge').style.display = 'none';
+      updateOffRoadButtonStates();
       updateAllCalculations();
     });
   });
   
-  // Claim mode
-  claimMode.addEventListener('change', (e) => {
-    state.claimMode = e.target.value || null;
-    renderClaimInput();
+  // Industry preset buttons
+  document.querySelectorAll('.btn-industry').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const value = parseFloat(e.target.dataset.value);
+      state.offRoadPercent = value;
+      offRoadPercent.value = value;
+      updateOffRoadButtonStates();
+      updateAllCalculations();
+    });
+  });
+  
+  // Actual claim pair ($ <-> %)
+  actualDollars.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    state.actualDollars = value || null;
+    
+    // Update % from $
+    if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
+      const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      if (rebateShouldGet > 0) {
+        state.actualPercent = (value / rebateShouldGet) * 100;
+        actualPercent.value = state.actualPercent.toFixed(1);
+      }
+    }
+    
+    updateAllCalculations();
+  });
+  
+  actualPercent.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    state.actualPercent = value || null;
+    
+    // Update $ from %
+    if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
+      const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      state.actualDollars = (value / 100) * rebateShouldGet;
+      actualDollars.value = Math.round(state.actualDollars);
+    }
+    
+    updateAllCalculations();
+  });
+  
+  // Gut feel pair ($ <-> %)
+  gutfeelDollars.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    state.gutfeelDollars = value || null;
+    
+    // Update % from $
+    if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
+      const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      if (rebateShouldGet > 0) {
+        state.gutfeelPercent = (value / rebateShouldGet) * 100;
+        gutfeelPercent.value = state.gutfeelPercent.toFixed(1);
+      }
+    }
+    
+    updateAllCalculations();
+  });
+  
+  gutfeelPercent.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    state.gutfeelPercent = value || null;
+    
+    // Update $ from %
+    if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
+      const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+      state.gutfeelDollars = (value / 100) * rebateShouldGet;
+      gutfeelDollars.value = Math.round(state.gutfeelDollars);
+    }
+    
     updateAllCalculations();
   });
 }
 
-function renderClaimInput() {
-  const container = document.getElementById('claim-input-container');
-  
-  if (!state.claimMode) {
-    container.innerHTML = '';
-    return;
-  }
-  
-  if (state.claimMode === 'dollars') {
-    container.innerHTML = `
-      <div class="field-group">
-        <label>$ claimed per year</label>
-        <div class="input-with-prefix">
-          <span class="prefix">$</span>
-          <input type="number" id="claim-value" class="form-input" placeholder="e.g., 20000">
-        </div>
-      </div>
-    `;
-  } else if (state.claimMode === 'gutfeel') {
-    container.innerHTML = `
-      <div class="field-group">
-        <label>Gut-feel % of entitlement</label>
-        <input type="number" id="claim-value" class="form-input" placeholder="e.g., 80" min="0" max="100">
-        <div class="quick-picks">
-          <button type="button" class="btn-quick-claim" data-value="25">25%</button>
-          <button type="button" class="btn-quick-claim" data-value="50">50%</button>
-          <button type="button" class="btn-quick-claim" data-value="75">75%</button>
-          <button type="button" class="btn-quick-claim" data-value="100">100%</button>
-        </div>
-      </div>
-    `;
-    
-    // Add quick pick handlers
-    document.querySelectorAll('.btn-quick-claim').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const value = parseFloat(e.target.dataset.value);
-        state.claimValue = value;
-        document.getElementById('claim-value').value = value;
-        updateAllCalculations();
-      });
-    });
-  }
-  
-  // Add input handler
-  const claimInput = document.getElementById('claim-value');
-  if (claimInput) {
-    claimInput.addEventListener('input', (e) => {
-      state.claimValue = parseFloat(e.target.value) || null;
-      updateAllCalculations();
-    });
-  }
+function updateOffRoadButtonStates() {
+  document.querySelectorAll('.btn-percent').forEach(btn => {
+    if (parseFloat(btn.dataset.value) === state.offRoadPercent) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
 }
 
 // Admin fields
@@ -400,27 +341,19 @@ function setupAdminFields() {
 
 // Operator fields
 function setupOperatorFields() {
-  const operatorWeek = document.getElementById('operator-hours-week');
-  const operatorMonth = document.getElementById('operator-hours-month');
+  const operatorMinutes = document.getElementById('operator-minutes-per-dispense');
+  const operatorDispenses = document.getElementById('operator-dispenses-per-week');
   const operatorRate = document.getElementById('operator-rate');
   
-  operatorWeek.addEventListener('input', (e) => {
+  operatorMinutes.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
-    if (value) {
-      state.operatorHoursYear = value * 52;
-    } else {
-      state.operatorHoursYear = null;
-    }
+    state.operatorMinutesPerDispense = value || null;
     updateAllCalculations();
   });
   
-  operatorMonth.addEventListener('input', (e) => {
+  operatorDispenses.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
-    if (value) {
-      state.operatorHoursYear = value * 12;
-    } else {
-      state.operatorHoursYear = null;
-    }
+    state.operatorDispensesPerWeek = value || null;
     updateAllCalculations();
   });
   
@@ -476,8 +409,8 @@ function updateAllCalculations() {
 function updateSectionResults() {
   // Section 2: Rebate
   const rebateShouldEl = document.getElementById('result-rebate-should');
-  if (state.dispensedLitresYear && state.offRoadPercent !== null) {
-    const rebate = calculateRebateShouldGet(state.dispensedLitresYear, state.offRoadPercent);
+  if (state.fuelLitresYear && state.offRoadPercent !== null) {
+    const rebate = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
     rebateShouldEl.textContent = formatCurrency(rebate);
   } else {
     rebateShouldEl.textContent = '—';
@@ -485,27 +418,45 @@ function updateSectionResults() {
   
   // Section 3: Admin
   const adminEl = document.getElementById('result-admin');
+  const adminHoursNote = document.getElementById('admin-hours-note');
   if (state.adminHoursYear) {
     const cost = Math.round(state.adminHoursYear * state.adminRate);
     adminEl.textContent = formatCurrency(cost);
+    
+    // Calculate hours per month and format (drop .0)
+    const hoursPerMonth = state.adminHoursYear / 12;
+    const rounded = Math.round(hoursPerMonth * 10) / 10;
+    const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+    adminHoursNote.textContent = `· ${formatted} hrs per month`;
   } else {
     adminEl.textContent = '—';
+    adminHoursNote.textContent = '';
   }
   
   const operatorLine = document.getElementById('result-operator-line');
   const operatorEl = document.getElementById('result-operator');
-  if (state.operatorHoursYear) {
-    const cost = Math.round(state.operatorHoursYear * state.operatorRate);
+  const operatorHoursNote = document.getElementById('operator-hours-note');
+  if (state.operatorMinutesPerDispense && state.operatorDispensesPerWeek) {
+    // Formula: minutes per dispense × dispenses per week × 52 / 60 × rate
+    const hoursPerYear = state.operatorMinutesPerDispense * state.operatorDispensesPerWeek * 52 / 60;
+    const cost = Math.round(hoursPerYear * state.operatorRate);
     operatorEl.textContent = formatCurrency(cost);
     operatorLine.style.display = 'flex';
+    
+    // Hours per month: minutes × dispenses per week × 52 / 12 / 60
+    const hoursPerMonth = state.operatorMinutesPerDispense * state.operatorDispensesPerWeek * 52 / 12 / 60;
+    const rounded = Math.round(hoursPerMonth * 10) / 10;
+    const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+    operatorHoursNote.textContent = `· ${formatted} hrs per month`;
   } else {
     operatorLine.style.display = 'none';
+    operatorHoursNote.textContent = '';
   }
   
   // Section 4: Theft
   const theftEl = document.getElementById('result-theft');
-  if (state.dispensedLitresYear) {
-    const theft = calculateTheftExposure(state.dispensedLitresYear, state.theftPercent, state.dieselPrice);
+  if (state.fuelLitresYear) {
+    const theft = calculateTheftExposure(state.fuelLitresYear, state.theftPercent, state.dieselPrice);
     theftEl.textContent = formatCurrency(theft);
   } else {
     theftEl.textContent = '—';
@@ -513,79 +464,138 @@ function updateSectionResults() {
 }
 
 function updateTotalResults() {
-  // Calculate all values
-  const rebateShouldGet = (state.dispensedLitresYear && state.offRoadPercent !== null) ?
-    calculateRebateShouldGet(state.dispensedLitresYear, state.offRoadPercent) : 0;
+  // Calculate rebate should get (uses total fuel from Section 1)
+  const rebateShouldGet = (state.fuelLitresYear && state.offRoadPercent !== null) ?
+    calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent) : 0;
   
-  const rebateMissed = calculateRebateMissed(rebateShouldGet, state.claimMode, state.claimValue);
-  
-  const adminCost = state.adminHoursYear ? Math.round(state.adminHoursYear * state.adminRate) : 0;
-  
-  const operatorCost = state.operatorHoursYear ? Math.round(state.operatorHoursYear * state.operatorRate) : 0;
-  
-  const theftExposure = state.dispensedLitresYear ?
-    calculateTheftExposure(state.dispensedLitresYear, state.theftPercent, state.dieselPrice) : 0;
-  
-  const totalSavings = calculateTotalSavings(rebateMissed, adminCost, operatorCost, theftExposure);
-  
-  // Update display
   document.getElementById('total-rebate-should').textContent = rebateShouldGet ? formatCurrency(rebateShouldGet) : '—';
   
-  // Getting now
+  // What they're getting now (actual $ if filled, else gut feel $)
   const gettingNowItem = document.getElementById('getting-now-item');
   const gettingNowEl = document.getElementById('total-getting-now');
-  if (state.claimMode) {
+  const gettingNowNote = document.getElementById('getting-now-note');
+  
+  if (state.actualDollars || state.gutfeelDollars) {
     gettingNowItem.style.display = 'block';
-    if (state.claimMode === 'dollars' && state.claimValue) {
-      gettingNowEl.textContent = formatCurrency(state.claimValue);
-    } else if (state.claimMode === 'gutfeel' && state.claimValue) {
-      gettingNowEl.textContent = state.claimValue + '% (gut-feel)';
-    } else {
-      gettingNowEl.textContent = '—';
+    
+    if (state.actualDollars) {
+      gettingNowEl.textContent = formatCurrency(state.actualDollars);
+      const actualPercent = rebateShouldGet > 0 ? ((state.actualDollars / rebateShouldGet) * 100).toFixed(1) : '0.0';
+      gettingNowNote.textContent = `Actual: ${formatCurrency(state.actualDollars)} (${actualPercent}%)`;
+    } else if (state.gutfeelDollars) {
+      gettingNowEl.textContent = formatCurrency(state.gutfeelDollars);
+      const gutfeelPercent = rebateShouldGet > 0 ? ((state.gutfeelDollars / rebateShouldGet) * 100).toFixed(1) : '0.0';
+      gettingNowNote.textContent = `Gut feel: ${formatCurrency(state.gutfeelDollars)} (${gutfeelPercent}%)`;
     }
   } else {
     gettingNowItem.style.display = 'none';
   }
   
-  // Rebate missed
-  const rebateMissedItem = document.getElementById('rebate-missed-item');
-  const rebateMissedEl = document.getElementById('total-rebate-missed');
-  const rebateMissedNote = document.getElementById('rebate-missed-note');
+  // Calculate actual claim missed
+  let actualMissed = 0;
+  const actualMissedItem = document.getElementById('actual-missed-item');
+  const actualMissedNote = document.getElementById('actual-missed-note');
   
-  if (state.claimMode) {
-    rebateMissedItem.style.display = 'block';
-    rebateMissedEl.textContent = formatCurrency(rebateMissed);
+  if (state.actualDollars && rebateShouldGet > 0) {
+    actualMissed = Math.max(0, rebateShouldGet - state.actualDollars);
+    actualMissedItem.style.display = 'block';
+    document.getElementById('total-actual-missed').textContent = formatCurrency(actualMissed);
     
-    // Check for over-claim
-    const overClaim = isOverClaimed(rebateShouldGet, state.claimMode, state.claimValue);
-    if (overClaim) {
-      rebateMissedNote.textContent = 'They may be claiming on fuel not dispensed on site; check the litres.';
-      rebateMissedNote.classList.add('warning');
+    // Over-claim check
+    if (state.actualDollars > rebateShouldGet) {
+      actualMissedNote.textContent = 'Over-claiming; check the figures.';
+      actualMissedNote.classList.add('warning');
     } else {
-      rebateMissedNote.textContent = '';
-      rebateMissedNote.classList.remove('warning');
+      actualMissedNote.textContent = '';
+      actualMissedNote.classList.remove('warning');
     }
   } else {
-    rebateMissedItem.style.display = 'none';
+    actualMissedItem.style.display = 'none';
   }
   
-  // Admin
-  document.getElementById('total-admin').textContent = adminCost ? formatCurrency(adminCost) : '—';
+  // Calculate gut feel missed
+  let gutfeelMissed = 0;
+  const gutfeelMissedItem = document.getElementById('gutfeel-missed-item');
+  const gutfeelMissedNote = document.getElementById('gutfeel-missed-note');
   
-  // Operator
+  if (state.gutfeelDollars && rebateShouldGet > 0) {
+    gutfeelMissed = Math.max(0, rebateShouldGet - state.gutfeelDollars);
+    gutfeelMissedItem.style.display = 'block';
+    document.getElementById('total-gutfeel-missed').textContent = formatCurrency(gutfeelMissed);
+    
+    // Over-claim check
+    if (state.gutfeelDollars > rebateShouldGet) {
+      gutfeelMissedNote.textContent = 'Over-claiming; check the figures.';
+      gutfeelMissedNote.classList.add('warning');
+    } else {
+      gutfeelMissedNote.textContent = '';
+      gutfeelMissedNote.classList.remove('warning');
+    }
+  } else {
+    gutfeelMissedItem.style.display = 'none';
+  }
+  
+  // Admin and operator
+  const adminCost = state.adminHoursYear ? Math.round(state.adminHoursYear * state.adminRate) : 0;
+  
+  // Operator: minutes per dispense × dispenses per week × 52 / 60 × rate
+  let operatorCost = 0;
+  let operatorHoursPerMonth = 0;
+  if (state.operatorMinutesPerDispense && state.operatorDispensesPerWeek) {
+    const hoursPerYear = state.operatorMinutesPerDispense * state.operatorDispensesPerWeek * 52 / 60;
+    operatorCost = Math.round(hoursPerYear * state.operatorRate);
+    operatorHoursPerMonth = state.operatorMinutesPerDispense * state.operatorDispensesPerWeek * 52 / 12 / 60;
+  }
+  
+  const totalAdminHoursNote = document.getElementById('admin-hours-note');
+  if (adminCost) {
+    document.getElementById('total-admin').textContent = formatCurrency(adminCost);
+    
+    // Calculate hours per month and format (drop .0)
+    const hoursPerMonth = state.adminHoursYear / 12;
+    const rounded = Math.round(hoursPerMonth * 10) / 10;
+    const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+    totalAdminHoursNote.textContent = `· ${formatted} hrs per month`;
+  } else {
+    document.getElementById('total-admin').textContent = '—';
+    totalAdminHoursNote.textContent = '';
+  }
+  
   const operatorItem = document.getElementById('operator-item');
+  const totalOperatorHoursNote = document.getElementById('operator-hours-note');
   if (operatorCost > 0) {
     operatorItem.style.display = 'block';
     document.getElementById('total-operator').textContent = formatCurrency(operatorCost);
+    
+    // Format hours per month (drop .0)
+    const rounded = Math.round(operatorHoursPerMonth * 10) / 10;
+    const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
+    totalOperatorHoursNote.textContent = `· ${formatted} hrs per month`;
   } else {
     operatorItem.style.display = 'none';
+    totalOperatorHoursNote.textContent = '';
   }
   
-  // Theft
+  // Theft (uses total fuel from Section 1)
+  const theftExposure = state.fuelLitresYear ?
+    calculateTheftExposure(state.fuelLitresYear, state.theftPercent, state.dieselPrice) : 0;
   document.getElementById('total-theft').textContent = theftExposure ? formatCurrency(theftExposure) : '—';
   
-  // Total
+  // Total savings: uses actual if filled, otherwise gut feel, otherwise $0
+  let rebateMissedForTotal = 0;
+  let savingsSource = '';
+  
+  if (state.actualDollars) {
+    rebateMissedForTotal = actualMissed;
+    savingsSource = '(using actual claim)';
+  } else if (state.gutfeelDollars) {
+    rebateMissedForTotal = gutfeelMissed;
+    savingsSource = '(using gut feel)';
+  }
+  
+  const totalSavings = calculateTotalSavings(rebateMissedForTotal, adminCost, operatorCost, theftExposure);
   document.getElementById('total-savings').textContent = formatCurrency(totalSavings);
+  document.getElementById('savings-source').textContent = savingsSource;
 }
 
 // Initialize on load

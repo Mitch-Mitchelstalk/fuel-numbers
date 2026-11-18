@@ -2,6 +2,34 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.0] - 2026-11-18
+
+### Changed - Section 2 Rebate Redesign
+- **Removed dispensed litres fields:** On-site dispensed litres fields (week/month/year) removed entirely. Rebate and theft now use total fuel litres from Section 1 (D = L everywhere).
+- **Off-road % buttons:** Added selectable percentage buttons (0%, 10%, 20%, ..., 100% in 10% increments) for quick selection
+- **Industry preset buttons:** Changed from dropdown to 4 separate buttons (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%)
+- **Two claim pairs:** Replaced single claim mode dropdown with two always-visible editable pairs:
+  - **Actual claim:** $ per year ↔ % per year (linked fields)
+  - **Gut feel:** $ per year ↔ % per year (linked fields)
+- **What they're getting now:** New result line in results panel showing $ per year (actual if filled, else gut feel) with subtitle indicating which claim and percentage (e.g., "Gut feel: $19,377 (80.0%)" or "Actual: $20,000 (82.6%)")
+- **Admin and log-book hours subtitles:** Results panel now shows hours per month under admin cost and log-book time cost (e.g., "· 4.3 hrs per month"), converted from entered unit (per week × 52 / 12, per month as entered for admin; minutes per dispense × dispenses per week × 52 / 12 / 60 for log-book), rounded to 1 decimal place, dropping .0
+- **Operator time changed to log-book time:** Section 3 operator inputs changed from hours per week/month to minutes per dispense (filling in the log book) and dispenses per week. Formula: cost per year = minutes per dispense × dispenses per week × 52 / 60 × rate. Hourly rate presets updated to $35, $40, $52. Civil test updated: 2 min per dispense, 30 dispenses per week, $40/hr → 52 hrs/year, $2,080/year, 4.3 hrs per month, total $27,765 (was $31,093)
+- **Separate rebate missed calculations:** Rebate missed shown separately for actual claim and for gut feel (both always visible when filled)
+- **Smart total savings:** Total uses actual claim missed if filled, otherwise gut feel missed, otherwise $0. Shows which figure is used: "(using actual claim)" or "(using gut feel)".
+- **Over-claim warnings:** Each claim pair shows "Over-claiming; check the figures." if claim > rebate should get
+- **Removed features:** Dispensed > total warning, under-recording helper text, claim mode dropdown
+- **Updated formulas:** D = L throughout. Rebate and theft both use total fuel litres.
+- **Updated tests:** Removed test 4 (dispensed guard), renumbered tests 5→4 (skips) and 6→5 (over-claim). Farm test now covers 4 scenarios: blank claims, gut feel 80%, actual $20,000, and both filled (uses actual). Civil test uses 120,000 L/year total (not 10,000 dispensed from 11,600 total). All 5 tests pass.
+- **Updated SPEC:** Documented all Section 2 changes, updated formulas and test cases
+
+### Kept Unchanged
+- All formulas in calculator.js (calculateRebateShouldGet, etc.)
+- Section 1 (six linked fuel fields with smart price behavior)
+- Section 3 (Admin & Operator Time)
+- Section 4 (Theft Risk)
+- Linked fields test (test 3) unchanged
+- All ATO rates (53.7¢/L off-road, 21.3¢/L on-road from 3 Aug 2026)
+
 ## [1.1.2] - 2026-11-18
 
 ### Changed - Restored Six Linked Fields with Smart Price Behavior

@@ -34,20 +34,17 @@ Six linked input fields arranged as two horizontal rows:
 Typing in any one fills the other five. Diesel price ($/L) is the conversion rate between rows. When the price changes, whichever field type (litres or dollars) was last entered stays fixed and the other type recalculates from it.
 
 ### Section 2: Rebate
-- **On-site dispensed litres:** Three litres-only fields (week/month/year) arranged horizontally, pre-filled from total fuel use with "estimate" label until edited.
-- **Under-recording reminder:** Helper text shown below dispensed fields: "If they quote litres from their own records, check against litres bought - records often miss fills."
-- **Dispensed > total warning:** Shows when dispensed exceeds total fuel use.
-- **Off-road %:** Input field with quick picks (0%, 25%, 50%, 75%, 100%) and optional industry preset dropdown (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%). Shows "estimate" label if set via industry preset.
-- **What they're getting now:** Dropdown with three modes:
-  - Leave blank (no comparison)
-  - $ per year claimed now
-  - Gut-feel % of entitlement (with quick picks 25%, 50%, 75%, 100%)
-- **Section result:** Shows "Rebate they should be getting" calculated from dispensed litres and off-road %.
+- **Off-road %:** Input field with selectable percentage buttons (0%, 10%, 20%, ..., 100% in 10% increments) plus industry preset buttons (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%).
+- **Actual claim:** Two linked fields ($ per year ↔ % per year). Entering one automatically calculates the other based on the rebate they should be getting.
+- **Gut feel:** Two linked fields ($ per year ↔ % per year). Same linking behavior as actual claim.
+- Both claim pairs are always visible and editable. Rebate missed is calculated separately for each.
+- **Section result:** Shows "Rebate they should be getting" calculated from total fuel litres (Section 1) and off-road %.
+- **Note:** Rebate and theft calculations now use total fuel litres from Section 1 (D = L). On-site dispensed litres fields have been removed.
 
 ### Section 3: Admin & Operator Time
 - **Admin time:** Hours per week and per month (linked), hourly rate with presets ($35, $52, $75). Default $52 with "estimate" label until edited.
-- **Operator time (optional):** Same structure as admin - hours per week/month, hourly rate with presets. Blank counts as $0.
-- **Section result:** Shows admin cost per year, and operator time cost per year (if entered).
+- **Log-book time (optional):** Minutes per dispense (filling in the log book), dispenses per week, hourly rate with presets ($35, $40, $52). Blank counts as $0.
+- **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
 - **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default medium.
@@ -57,13 +54,14 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 ### Results Panel (sticky right column)
 Always visible, shows all calculated values updating live:
 1. Rebate they should be getting (headline, per year)
-2. What they're getting now (if claim mode selected)
-3. Rebate being missed (if claim mode selected, with over-claim warning if applicable)
-4. Admin cost per year
-5. Operator time cost per year (if entered)
-6. Theft exposure per year
-7. **Total potential savings per year** (highlighted)
-8. ATO rate source line at bottom
+2. What they're getting now - shown if either claim filled. Main number: actual claim $ if filled, otherwise gut feel $. Subtitle shows which: "Actual: $X (Y%)" or "Gut feel: $X (Y%)"
+3. Rebate missed (actual claim) - shown if actual claim filled, with over-claim warning if applicable
+4. Rebate missed (gut feel) - shown if gut feel filled, with over-claim warning if applicable
+5. Admin cost per year - with subtitle showing hours per month (e.g., "· 4.3 hrs per month"), converted from entered unit (per week × 52 / 12, per month as entered), rounded to 1 decimal place, dropping .0
+6. Log-book time cost per year (if entered) - with subtitle showing hours per month (e.g., "· 4.3 hrs per month"), calculated from minutes per dispense × dispenses per week × 52 / 12 / 60, rounded to 1 decimal place, dropping .0
+7. Theft exposure per year
+8. **Total potential savings per year** (highlighted) - uses actual claim if filled, otherwise gut feel, otherwise $0. Shows which figure is used: "(using actual claim)" or "(using gut feel)".
+9. ATO rate source line at bottom
 
 All results update automatically as inputs change. No navigation buttons, no progress bar, no separate screens.
 
@@ -76,16 +74,14 @@ Litres per week, month and year, and dollars per week, month and year. Typing in
 - Example: $8,880/month at $2.22/L = 4,000 L/month = 48,000 L/year = 923 L/week. At $2.22/L that's $106,560/year and $2,049/week.
 
 ## Formulas (annual)
-L = annual litres used. D = annual litres dispensed on site. R = rebate they should be getting (rounded to whole dollars).
-- **Rebate they should be getting** R = D × (off% × off-road rate + (100 − off%)% × on-road rate).
-- **Rebate being missed:**
-  - $ mode: R − $ claimed now.
-  - Gut-feel mode: R × (100 − gut%)%.
-  - Never below $0. If $ claimed now is more than R, show $0 and the note "They may be claiming on fuel not dispensed on site; check the litres."
+L = annual litres used (total fuel from Section 1). D = L (dispensed litres removed). R = rebate they should be getting (rounded to whole dollars).
+- **Rebate they should be getting** R = L × (off% × off-road rate + (100 − off%)% × on-road rate).
+- **Rebate being missed (actual claim):** R − $ actual claimed. Never below $0. If $ actual > R, show $0 and warning "Over-claiming; check the figures."
+- **Rebate being missed (gut feel):** R − $ gut feel. Where $ gut feel = (gut feel % / 100) × R. Never below $0, same over-claim warning if applicable.
 - **Admin cost** = hours × (52 if per week, 12 if per month) × $/hour.
-- **Operator time cost** = hours × (52 if per week, 12 if per month) × $/hour.
-- **Theft exposure** = D × theft % × diesel $/L. On-site fuel is the fuel contractors can reach (Mitch, 18 Nov 2026).
-- **Total potential savings a year** = rebate being missed + admin + operator time + theft. The full entitlement R is never counted as a saving, because they're probably already claiming some of it.
+- **Log-book time cost** = minutes per dispense × dispenses per week × 52 / 60 × $/hour, rounded.
+- **Theft exposure** = L × theft % × diesel $/L.
+- **Total potential savings a year** = rebate being missed + admin + log-book time + theft. Uses actual claim missed if filled, otherwise gut feel missed, otherwise $0. The full entitlement R is never counted as a saving, because they're probably already claiming some of it.
 - Round each line to whole dollars before adding.
 
 ## Rates and defaults (check before every build)
@@ -97,18 +93,19 @@ L = annual litres used. D = annual litres dispensed on site. R = rebate they sho
 
 ## Worked test cases (must pass)
 1. **Farm example.**
-   - Inputs: use 4,000 L/month, all dispensed on site (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (1%), $2.22/L; getting now blank.
-   - Results: rebate they should be getting $24,221; missed $0; admin $1,820; theft $1,066; **total potential savings $2,886**.
-   - Gut-feel 80%: missed $4,844; **total $7,730**.
-   - $ mode, $20,000 claimed now: missed $4,221; **total $7,107**.
+   - Inputs: use 4,000 L/month (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (1%), $2.22/L.
+   - Results: rebate they should be getting $24,221; admin $1,820; theft $1,066.
+   - Claims blank: **total potential savings $2,886** (rebate missed $0).
+   - Gut feel 80%: getting now $19,377 (80%), missed $4,844; **total $7,730**.
+   - Actual $20,000: getting now 82.6%, missed $4,221; **total $7,107**.
+   - Both actual and gut feel filled: **total uses actual ($7,107)** not gut feel.
 2. **Civil example.**
-   - Inputs: use 11,600 L/month, of which 10,000 L/month is dispensed on site (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut-feel 80%.
-   - Results: rebate they should be getting $56,664; missed $11,333; admin $4,992; theft $9,360; **total potential savings $25,685**.
-   - Add operator time 2 hours/week at $52: operator $5,408; **total $31,093**.
+   - Inputs: use 10,000 L/month (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut feel 80%.
+   - Results: rebate they should be getting $56,664; gut feel getting now $45,331 (80%), missed $11,333; admin $4,992 (8 hrs per month); theft $9,360; **total potential savings $25,685**.
+   - Add log-book time 2 min per dispense, 30 dispenses per week at $40/hr: 52 hrs/year, log-book $2,080 (4.3 hrs per month); **total $27,765**.
 3. **Linked fields.** Enter $8,880/month at $2.22/L: converts to 4,000 L/month, 48,000 L/year, 923 L/week, plus $106,560/year and $2,049/week. Change price to $2.50/L with $ last typed: $ values stay unchanged (8,880, 106,560, 2,049), litres recalculate to 3,552 L/month, 42,624 L/year, 820 L/week.
-4. **Dispensed guard.** Total use 4,000 L/month and dispensed 5,000 L/month: a warning shows. The rebate still calculates on the dispensed figure.
-5. **Skips.** Skipping every supporting step still gives the core results. Off-road must then be entered by hand. Choosing Civil in step A pre-fills 80% off-road.
-6. **Over-claim guard.** Farm example in $ mode with $30,000 claimed now: missed shows $0 with the check note.
+4. **Skips.** Skipping every supporting step (admin, operator, theft, claims) still gives the core results (rebate only). Off-road must then be entered by hand. Choosing an industry preset button pre-fills the off-road %.
+5. **Over-claim guard.** Farm example with actual claim $30,000: missed shows $0 with warning "Over-claiming; check the figures."
 
 ## Build and done
 - Repo, hosting and link visibility follow the approved review pack: a private GitHub repo (Mitch-Mitchelstalk/fuel-numbers) deployed on Netlify Free, unlisted and noindex.
