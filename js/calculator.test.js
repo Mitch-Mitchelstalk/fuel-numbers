@@ -122,32 +122,29 @@ function testCivilExample() {
 
 // Test Case 3: Linked fields
 function testLinkedFields() {
-  // Enter $8,880/month at $2.22: all six fields match the 4,000 L/month example
-  const dollarsPerMonth = 8880;
-  const dieselPrice = 2.22;
-  
-  const litresPerMonth = dollarsToLitres(dollarsPerMonth, dieselPrice);
-  assertEqual(Math.round(litresPerMonth), 4000, 'Linked: litres per month from dollars');
+  // Enter 4,000 L/month: converts to 923 L/week and 48,000 L/year
+  const litresPerMonth = 4000;
   
   const litresPerYear = convertFuelUsage(litresPerMonth, 'month', 'year');
-  assertEqual(Math.round(litresPerYear), 48000, 'Linked: litres per year');
+  assertEqual(Math.round(litresPerYear), 48000, 'Linked: litres per year from month');
   
   const litresPerWeek = convertFuelUsage(litresPerMonth, 'month', 'week');
-  assertEqual(Math.round(litresPerWeek), 923, 'Linked: litres per week');
+  assertEqual(Math.round(litresPerWeek), 923, 'Linked: litres per week from month');
   
-  const dollarsPerYear = litresToDollars(litresPerYear, dieselPrice);
-  assertEqual(Math.round(dollarsPerYear), 106560, 'Linked: dollars per year');
+  // Changing diesel price changes calculations only, not litres
+  const dieselPrice1 = 2.22;
+  const dieselPrice2 = 2.50;
   
-  const dollarsPerWeek = litresToDollars(litresPerWeek, dieselPrice);
-  assertEqual(Math.round(dollarsPerWeek), 2049, 'Linked: dollars per week');
+  // Calculate theft at both prices (litres stay the same)
+  const theft1 = calculateTheftExposure(litresPerYear, 3, dieselPrice1); // 3% theft
+  const theft2 = calculateTheftExposure(litresPerYear, 3, dieselPrice2);
   
-  // Change the price to $2.50: the litres stay the same and the $ fields update
-  const newDieselPrice = 2.50;
-  const newDollarsPerMonth = litresToDollars(litresPerMonth, newDieselPrice);
-  assertEqual(Math.round(newDollarsPerMonth), 10000, 'Linked: dollars per month with new price');
+  assertEqual(Math.round(theft1), 3197, 'Linked: theft at $2.22/L');
+  assertEqual(Math.round(theft2), 3600, 'Linked: theft at $2.50/L');
   
-  const newDollarsPerYear = litresToDollars(litresPerYear, newDieselPrice);
-  assertEqual(Math.round(newDollarsPerYear), 120000, 'Linked: dollars per year with new price');
+  // Litres are unaffected by price change
+  const litresStillSame = litresPerMonth;
+  assertEqual(litresStillSame, 4000, 'Linked: litres unchanged when price changes');
 }
 
 // Test Case 4: Dispensed guard

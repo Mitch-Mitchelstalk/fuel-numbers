@@ -27,12 +27,13 @@ This skill is the source of truth for the app. Fuel Numbers owns it (Mitch, 18 N
 Single-page desktop calculator with live calculations. All inputs grouped into 4 numbered sections down the page, with results updating as you type. A sticky results panel on the right shows the complete savings breakdown.
 
 ### Section 1: Fuel Use
-Six linked input fields (litres and dollars, per week/month/year) that automatically update when any one is changed. Diesel price field with "estimate" label until edited, defaults to $2.22/L.
+Three linked litres input fields (per week/month/year) arranged horizontally that automatically update when any one is changed. Shows "Fuel spend per year" as a read-only calculated result.
 
 ### Section 2: Rebate
-- **On-site dispensed litres:** Three fields (week/month/year), pre-filled from total fuel use with "estimate" labels until edited.
+- **On-site dispensed litres:** Three fields (week/month/year) arranged horizontally, pre-filled from total fuel use with "estimate" label until edited.
 - **Under-recording reminder:** Helper text shown below dispensed fields: "If they quote litres from their own records, check against litres bought - records often miss fills."
 - **Dispensed > total warning:** Shows when dispensed exceeds total fuel use.
+- **Diesel price:** Input field with "estimate" label until edited, defaults to $2.22/L. Only affects downstream calculations (theft exposure), not fuel use input fields.
 - **Off-road %:** Input field with quick picks (0%, 25%, 50%, 75%, 100%) and optional industry preset dropdown (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%). Shows "estimate" label if set via industry preset.
 - **What they're getting now:** Dropdown with three modes:
   - Leave blank (no comparison)
@@ -63,12 +64,12 @@ Always visible, shows all calculated values updating live:
 
 All results update automatically as inputs change. No navigation buttons, no progress bar, no separate screens.
 
-## Six linked fuel-usage fields
-Litres per week, month and year, and dollars per week, month and year. Typing in any one fills the other five.
+## Three linked fuel-usage fields
+Litres per week, month and year. Typing in any one fills the other two.
 - 1 year = 52 weeks = 12 months. For annual litres L: week = L ÷ 52, month = L ÷ 12.
-- $ = litres × diesel price. The diesel price defaults to $2.22/L and is editable. Changing the price recalculates the $ fields from the litres last entered.
-- Show litres to whole numbers and $ to whole dollars. Keep full precision internally.
-- Example: 4,000 L/month = 48,000 L/year = 923 L/week. At $2.22/L that's $8,880/month, $106,560/year and $2,049/week.
+- Show litres to whole numbers. Keep full precision internally.
+- Example: 4,000 L/month = 48,000 L/year = 923 L/week.
+- Diesel price ($/L) is a separate input in Section 2 that only affects downstream calculations (theft exposure), not the fuel use input fields.
 
 ## Formulas (annual)
 L = annual litres used. D = annual litres dispensed on site. R = rebate they should be getting (rounded to whole dollars).
@@ -100,7 +101,7 @@ L = annual litres used. D = annual litres dispensed on site. R = rebate they sho
    - Inputs: use 11,600 L/month, of which 10,000 L/month is dispensed on site (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut-feel 80%.
    - Results: rebate they should be getting $56,664; missed $11,333; admin $4,992; theft $9,360; **total potential savings $25,685**.
    - Add operator time 2 hours/week at $52: operator $5,408; **total $31,093**.
-3. **Linked fields.** Enter $8,880/month at $2.22: all six fields match the 4,000 L/month example. Change the price to $2.50: the litres stay the same and the $ fields update.
+3. **Linked fields.** Enter 4,000 L/month: converts to 923 L/week and 48,000 L/year. Changing diesel price from $2.22 to $2.50 changes theft exposure only; litres fields remain unchanged.
 4. **Dispensed guard.** Total use 4,000 L/month and dispensed 5,000 L/month: a warning shows. The rebate still calculates on the dispensed figure.
 5. **Skips.** Skipping every supporting step still gives the core results. Off-road must then be entered by hand. Choosing Civil in step A pre-fills 80% off-road.
 6. **Over-claim guard.** Farm example in $ mode with $30,000 claimed now: missed shows $0 with the check note.

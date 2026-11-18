@@ -2,6 +2,24 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.1.1] - 2026-11-18
+
+### Changed - Fuel Use Section Refinements
+- **Horizontal layout:** Litres per week/month/year now arranged side by side in one row with clear visual separation
+- **Simplified fuel use:** Removed dollar input fields from Section 1 - fuel use is litres only (3 linked fields)
+- **Diesel price moved:** Now in Section 2 (Rebate) where it's used for calculations
+- **Diesel price behavior:** Only affects downstream calculations (theft exposure), does not affect fuel use input fields
+- **Added result line:** "Fuel spend per year" shown as read-only calculated result in Section 1
+- **Horizontal dispensed litres:** On-site dispensed litres in Section 2 now also arranged horizontally (week/month/year)
+- **Consolidated badge:** Dispensed litres now has one "estimate" badge for all three fields
+- **Updated test 3:** Now tests litres field linking and diesel price affecting calculations only, not inputs
+- Six linked fields → three linked litres fields
+
+### Kept Unchanged
+- All formulas and calculations (calculator.js untouched except test 3 update)
+- All 6 test cases pass with exact dollar values
+- All other functionality and behaviors
+
 ## [1.1.0] - 2026-11-18
 
 ### Changed - Complete UI Redesign

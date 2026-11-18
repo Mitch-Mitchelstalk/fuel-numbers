@@ -65,17 +65,13 @@ function init() {
   updateAllCalculations();
 }
 
-// Fuel use fields
+// Fuel use fields - litres only
 function setupFuelFields() {
   const litresWeek = document.getElementById('fuel-litres-week');
   const litresMonth = document.getElementById('fuel-litres-month');
   const litresYear = document.getElementById('fuel-litres-year');
-  const dollarsWeek = document.getElementById('fuel-dollars-week');
-  const dollarsMonth = document.getElementById('fuel-dollars-month');
-  const dollarsYear = document.getElementById('fuel-dollars-year');
-  const dieselPrice = document.getElementById('diesel-price');
   
-  // Litres inputs
+  // Litres inputs - linked to each other only
   litresWeek.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     if (value) {
@@ -102,46 +98,6 @@ function setupFuelFields() {
       updateAllCalculations();
     }
   });
-  
-  // Dollars inputs
-  dollarsWeek.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      const litres = dollarsToLitres(value, state.dieselPrice);
-      state.fuelLitresYear = convertFuelUsage(litres, 'week', 'year');
-      updateFuelFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-  
-  dollarsMonth.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      const litres = dollarsToLitres(value, state.dieselPrice);
-      state.fuelLitresYear = convertFuelUsage(litres, 'month', 'year');
-      updateFuelFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-  
-  dollarsYear.addEventListener('input', (e) => {
-    const value = parseFloat(e.target.value);
-    if (value) {
-      const litres = dollarsToLitres(value, state.dieselPrice);
-      state.fuelLitresYear = litres;
-      updateFuelFieldsFromAnnual();
-      updateAllCalculations();
-    }
-  });
-  
-  // Diesel price
-  dieselPrice.addEventListener('input', (e) => {
-    state.dieselPrice = parseFloat(e.target.value) || RATES.defaultDiesel;
-    state.dieselPriceModified = true;
-    document.getElementById('diesel-price-badge').style.display = 'none';
-    updateFuelFieldsFromAnnual();
-    updateAllCalculations();
-  });
 }
 
 function updateFuelFieldsFromAnnual() {
@@ -154,13 +110,9 @@ function updateFuelFieldsFromAnnual() {
   document.getElementById('fuel-litres-month').value = Math.round(litresMonth);
   document.getElementById('fuel-litres-year').value = Math.round(state.fuelLitresYear);
   
-  const dollarsWeek = litresToDollars(litresWeek, state.dieselPrice);
-  const dollarsMonth = litresToDollars(litresMonth, state.dieselPrice);
-  const dollarsYear = litresToDollars(state.fuelLitresYear, state.dieselPrice);
-  
-  document.getElementById('fuel-dollars-week').value = Math.round(dollarsWeek);
-  document.getElementById('fuel-dollars-month').value = Math.round(dollarsMonth);
-  document.getElementById('fuel-dollars-year').value = Math.round(dollarsYear);
+  // Update fuel spend result
+  const fuelSpend = litresToDollars(state.fuelLitresYear, state.dieselPrice);
+  document.getElementById('result-fuel-spend').textContent = formatCurrency(Math.round(fuelSpend));
   
   // Update dispensed if not modified
   if (!state.dispensedModified && state.fuelLitresYear) {
@@ -216,11 +168,9 @@ function updateDispensedFieldsFromAnnual() {
   document.getElementById('dispensed-litres-month').value = Math.round(dispensedMonth);
   document.getElementById('dispensed-litres-year').value = Math.round(state.dispensedLitresYear);
   
-  // Hide estimate badges
+  // Hide estimate badge
   if (state.dispensedModified) {
-    document.getElementById('dispensed-week-badge').style.display = 'none';
-    document.getElementById('dispensed-month-badge').style.display = 'none';
-    document.getElementById('dispensed-year-badge').style.display = 'none';
+    document.getElementById('dispensed-badge').style.display = 'none';
   }
   
   // Check warning
@@ -237,6 +187,15 @@ function setupRebateFields() {
   const offRoadPercent = document.getElementById('offroad-percent');
   const industryPreset = document.getElementById('industry-preset');
   const claimMode = document.getElementById('claim-mode');
+  const dieselPrice = document.getElementById('diesel-price');
+  
+  // Diesel price - only affects calculations
+  dieselPrice.addEventListener('input', (e) => {
+    state.dieselPrice = parseFloat(e.target.value) || RATES.defaultDiesel;
+    state.dieselPriceModified = true;
+    document.getElementById('diesel-price-badge').style.display = 'none';
+    updateAllCalculations();
+  });
   
   // Off-road %
   offRoadPercent.addEventListener('input', (e) => {

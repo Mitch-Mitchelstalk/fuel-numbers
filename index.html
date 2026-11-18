@@ -21,50 +21,27 @@
           <h2><span class="section-number">1</span> Fuel Use</h2>
           
           <div class="field-group">
-            <label>Litres per week</label>
-            <input type="number" id="fuel-litres-week" class="form-input" placeholder="e.g., 923">
-          </div>
-          
-          <div class="field-group">
-            <label>Litres per month</label>
-            <input type="number" id="fuel-litres-month" class="form-input" placeholder="e.g., 4000">
-          </div>
-          
-          <div class="field-group">
-            <label>Litres per year</label>
-            <input type="number" id="fuel-litres-year" class="form-input" placeholder="e.g., 48000">
-          </div>
-          
-          <div class="field-group">
-            <label>Dollars per week</label>
-            <div class="input-with-prefix">
-              <span class="prefix">$</span>
-              <input type="number" id="fuel-dollars-week" class="form-input" placeholder="e.g., 2049">
+            <label>Litres</label>
+            <div class="field-row-horizontal">
+              <div class="field-col">
+                <label class="field-sublabel">per week</label>
+                <input type="number" id="fuel-litres-week" class="form-input" placeholder="e.g., 923">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per month</label>
+                <input type="number" id="fuel-litres-month" class="form-input" placeholder="e.g., 4000">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per year</label>
+                <input type="number" id="fuel-litres-year" class="form-input" placeholder="e.g., 48000">
+              </div>
             </div>
           </div>
           
-          <div class="field-group">
-            <label>Dollars per month</label>
-            <div class="input-with-prefix">
-              <span class="prefix">$</span>
-              <input type="number" id="fuel-dollars-month" class="form-input" placeholder="e.g., 8880">
-            </div>
-          </div>
-          
-          <div class="field-group">
-            <label>Dollars per year</label>
-            <div class="input-with-prefix">
-              <span class="prefix">$</span>
-              <input type="number" id="fuel-dollars-year" class="form-input" placeholder="e.g., 106560">
-            </div>
-          </div>
-          
-          <div class="field-group">
-            <label>Diesel price <span id="diesel-price-badge" class="estimate-badge">estimate</span></label>
-            <div class="input-with-prefix">
-              <span class="prefix">$</span>
-              <input type="number" id="diesel-price" class="form-input" value="2.22" step="0.01">
-              <span class="suffix">per litre</span>
+          <div class="section-result">
+            <div class="result-line">
+              <span class="result-label">Fuel spend per year:</span>
+              <span id="result-fuel-spend" class="result-value">—</span>
             </div>
           </div>
         </section>
@@ -74,23 +51,35 @@
           <h2><span class="section-number">2</span> Rebate</h2>
           
           <div class="field-group">
-            <label>On-site dispensed litres per week <span id="dispensed-week-badge" class="estimate-badge">estimate</span></label>
-            <input type="number" id="dispensed-litres-week" class="form-input">
-          </div>
-          
-          <div class="field-group">
-            <label>On-site dispensed litres per month <span id="dispensed-month-badge" class="estimate-badge">estimate</span></label>
-            <input type="number" id="dispensed-litres-month" class="form-input">
-          </div>
-          
-          <div class="field-group">
-            <label>On-site dispensed litres per year <span id="dispensed-year-badge" class="estimate-badge">estimate</span></label>
-            <input type="number" id="dispensed-litres-year" class="form-input">
+            <label>On-site dispensed litres <span id="dispensed-badge" class="estimate-badge">estimate</span></label>
+            <div class="field-row-horizontal">
+              <div class="field-col">
+                <label class="field-sublabel">per week</label>
+                <input type="number" id="dispensed-litres-week" class="form-input">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per month</label>
+                <input type="number" id="dispensed-litres-month" class="form-input">
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per year</label>
+                <input type="number" id="dispensed-litres-year" class="form-input">
+              </div>
+            </div>
             <div class="helper-text">If they quote litres from their own records, check against litres bought - records often miss fills.</div>
           </div>
           
           <div id="dispensed-warning" class="warning-box" style="display: none;">
             Dispensed amount is more than total fuel use.
+          </div>
+          
+          <div class="field-group">
+            <label>Diesel price <span id="diesel-price-badge" class="estimate-badge">estimate</span></label>
+            <div class="input-with-prefix">
+              <span class="prefix">$</span>
+              <input type="number" id="diesel-price" class="form-input" value="2.22" step="0.01">
+              <span class="suffix">per litre</span>
+            </div>
           </div>
           
           <div class="field-group">
