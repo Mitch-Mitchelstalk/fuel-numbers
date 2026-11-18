@@ -111,6 +111,9 @@ function init() {
   setupTheftFields();
   setupThousandsSeparators();
   
+  // Update button states
+  updateTheftButtonStates();
+  
   // Initial calculation
   updateAllCalculations();
 }
@@ -677,6 +680,7 @@ function setupTheftFields() {
       state.riskLevel = e.target.value;
       state.theftPercent = RATES.theft[e.target.value] * 100;
       theftPercent.value = state.theftPercent;
+      updateTheftButtonStates();
       updateAllCalculations();
     });
   });
@@ -685,6 +689,7 @@ function setupTheftFields() {
     state.theftPercent = parseNumberInput(e.target.value) || 0;
     state.theftModified = true;
     if (theftBadge) theftBadge.style.display = 'none';
+    updateTheftButtonStates();
     updateAllCalculations();
   });
   
@@ -695,8 +700,19 @@ function setupTheftFields() {
       theftPercent.value = state.theftPercent;
       state.theftModified = true;
       if (theftBadge) theftBadge.style.display = 'none';
+      updateTheftButtonStates();
       updateAllCalculations();
     });
+  });
+}
+
+function updateTheftButtonStates() {
+  document.querySelectorAll('.btn-quick-theft').forEach(btn => {
+    if (parseNumberInput(btn.dataset.value) === state.theftPercent) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
   });
 }
 

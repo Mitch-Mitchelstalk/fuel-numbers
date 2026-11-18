@@ -341,8 +341,13 @@ header p {
   margin-bottom: 0.5rem;
 }
 
-.admin-field-box .form-input {
-  margin-top: auto;
+.admin-field-box .form-input,
+.admin-field-box .input-with-prefix {
+  margin-top: 0;
+}
+
+.admin-field-box .quick-picks {
+  margin-top: 0.5rem;
 }
 
 .field-sublabel {
@@ -398,6 +403,7 @@ header p {
 .btn-quick-admin,
 .btn-quick-operator,
 .btn-percent,
+.btn-quick-theft,
 .btn-industry {
   padding: 0.5rem 0.875rem;
   font-size: 0.8125rem;
@@ -411,7 +417,8 @@ header p {
   font-family: inherit;
 }
 
-.btn-percent {
+.btn-percent,
+.btn-quick-theft {
   padding: 0.5rem 0.25rem;
   font-size: 0.75rem;
 }
@@ -420,6 +427,7 @@ header p {
 .btn-quick-admin:hover,
 .btn-quick-operator:hover,
 .btn-percent:hover,
+.btn-quick-theft:hover,
 .btn-industry:hover {
   background-color: #3B82F6;
   color: white;
@@ -432,6 +440,12 @@ header p {
   background-color: #3B82F6;
   color: white;
   border-color: #3B82F6;
+}
+
+.btn-quick-theft.active {
+  background-color: #D97706;
+  color: white;
+  border-color: #D97706;
 }
 
 /* Claim Columns (Side by Side with OR Divider) */
