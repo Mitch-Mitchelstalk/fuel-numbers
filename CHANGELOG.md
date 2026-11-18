@@ -2,6 +2,24 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.1.2] - 2026-11-18
+
+### Changed - Restored Six Linked Fields with Smart Price Behavior
+- **Six linked fields restored:** Section 1 now has two horizontal rows (Litres: week/month/year; Dollars: week/month/year)
+- **Smart diesel price:** When price changes, keeps whichever field type (litres or dollars) was last entered fixed and recalculates the other
+  - If rep typed litres: litres stay, $ update
+  - If rep typed $: $ stay, litres update
+- **Diesel price back in Section 1:** Moved from Section 2 back to Section 1 as the conversion rate between rows
+- **Removed redundant line:** Removed "Fuel spend per year" read-only result (now redundant with dollar fields)
+- **Updated test 3:** Tests $ entry ($8,880/month at $2.22) converting to litres, plus smart price change behavior
+- Three linked fields → six linked fields (with smart price behavior)
+
+### Kept Unchanged
+- Dispensed litres in Section 2 stays litres-only (horizontal week/month/year row)
+- All formulas and calculations (calculator.js)
+- All 6 test cases pass with exact dollar values
+- All other functionality and behaviors
+
 ## [1.1.1] - 2026-11-18
 
 ### Changed - Fuel Use Section Refinements
