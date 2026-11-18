@@ -2,6 +2,18 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.4] - 2026-11-18
+
+### Changed - Section Backgrounds
+- **Tinted section cards:** Each section now has a soft tinted background in its accent color for improved visual differentiation
+  - Section 1 (Fuel Use): Light blue background (#EFF6FF)
+  - Section 2 (Rebate): Light purple background (#F5F3FF)
+  - Section 3 (Admin & Log-book): Light green background (#ECFDF5)
+  - Section 4 (Theft risk): Light amber background (#FFFBEB)
+- **Section headers:** Stronger color tint on h2 headers (e.g. #DBEAFE for Fuel, #E9D5FF for Rebate)
+- **Input fields:** Remain white (#FFFFFF) for contrast and readability
+- **Accessibility:** All text maintains WCAG AA contrast requirements
+
 ## [1.2.3] - 2026-11-18
 
 ### Fixed - UI Bugs

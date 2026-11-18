@@ -116,13 +116,15 @@ header p {
 /* Section-specific colors */
 #section-fuel {
   border-left-color: var(--section-1-color);
+  background-color: var(--section-1-light);
 }
 
 #section-fuel h2 {
-  background: linear-gradient(135deg, var(--section-1-color) 0%, #60A5FA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--section-1-color);
+  padding: 1rem 1.25rem;
+  margin: -2rem -2rem 1.75rem -2rem;
+  background-color: #DBEAFE;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 #section-fuel .section-number {
@@ -131,13 +133,15 @@ header p {
 
 #section-rebate {
   border-left-color: var(--section-2-color);
+  background-color: var(--section-2-light);
 }
 
 #section-rebate h2 {
-  background: linear-gradient(135deg, var(--section-2-color) 0%, #A78BFA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--section-2-color);
+  padding: 1rem 1.25rem;
+  margin: -2rem -2rem 1.75rem -2rem;
+  background-color: #E9D5FF;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 #section-rebate .section-number {
@@ -146,13 +150,15 @@ header p {
 
 #section-admin {
   border-left-color: var(--section-3-color);
+  background-color: var(--section-3-light);
 }
 
 #section-admin h2 {
-  background: linear-gradient(135deg, var(--section-3-color) 0%, #34D399 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--section-3-color);
+  padding: 1rem 1.25rem;
+  margin: -2rem -2rem 1.75rem -2rem;
+  background-color: #D1FAE5;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 #section-admin .section-number {
@@ -161,13 +167,15 @@ header p {
 
 #section-theft {
   border-left-color: var(--section-4-color);
+  background-color: var(--section-4-light);
 }
 
 #section-theft h2 {
-  background: linear-gradient(135deg, var(--section-4-color) 0%, #FBBF24 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--section-4-color);
+  padding: 1rem 1.25rem;
+  margin: -2rem -2rem 1.75rem -2rem;
+  background-color: #FEF3C7;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 #section-theft .section-number {
@@ -237,7 +245,7 @@ header p {
   font-size: 0.9375rem;
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
-  background-color: var(--bg-base);
+  background-color: #FFFFFF;
   color: var(--text-primary);
   transition: all 0.2s ease;
   font-family: inherit;
