@@ -2,6 +2,20 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.8] - 2026-11-18
+
+### Changed - Section Styling Refinement
+- **White section body backgrounds** - Changed from tinted backgrounds to clean white
+- **Full accent-colored outlines** - Replaced left-only border with complete 2px border around entire section card
+- **Colored header bands** - Kept exactly as before (blue/purple/yellow/amber tinted headers)
+- **Border colors:**
+  - Section 1 (Fuel Use): Blue #3B82F6
+  - Section 2 (Rebate): Purple #8B5CF6
+  - Section 3 (Admin & Log-book): Yellow #CA8A04
+  - Section 4 (Theft risk): Amber #D97706
+- **Inner field groups** - Remain light neutral grey as before
+- **All other styling** - Unchanged (shadows, rounded corners, spacing)
+
 ## [1.2.7] - 2026-11-18
 
 ### Fixed - Critical Display Bugs
