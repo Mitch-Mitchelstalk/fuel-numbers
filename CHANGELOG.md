@@ -2,6 +2,18 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.2] - 2026-11-18
+
+### Changed - Modern UI Polish
+- **Section-specific accent colors:** Each input section now has a distinct, tasteful accent color with colored left border and gradient section header (Blue for Fuel Use, Purple for Rebate, Green for Admin & Log-book, Amber for Theft Risk). Matching colored number badges.
+- **Results panel color coding:** Money-missing figures (rebate missed actual/gut, admin cost, log-book cost, theft exposure, total potential savings) shown in soft muted crimson (#B42318) on light rose tint cards (#FEF3F2). "Rebate they should be getting" and "What they're getting now" stay neutral/blue. Total savings card most prominent with border emphasis.
+- **Modern design system:** Soft shadows, rounded corners (6-12px), generous spacing, clear visual hierarchy, improved typography with modern font stack.
+- **Enhanced form fields:** Better focus states (blue glow on focus), hover states, improved contrast (WCAG AA compliant), smooth transitions.
+- **Button improvements:** All buttons have hover effects (lift + shadow), active states for percentage buttons, consistent styling.
+- **Card-based layout:** Field columns have subtle background tint and hover effects, section results in gradient cards.
+- **Visual polish:** Gradient header, soft page background gradient, improved scrollbar styling, better estimate badges with gradient.
+- **All functionality unchanged:** All 6 tests pass, no breaking changes.
+
 ## [1.2.1] - 2026-11-18
 
 ### Added - Dispenses Default and Admin $ Fields
