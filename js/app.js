@@ -58,6 +58,24 @@ const state = {
 };
 
 /**
+ * Format an integer input field value (add commas if not focused)
+ * @param {HTMLInputElement} input - The input element
+ * @param {number} value - The numeric value to set
+ */
+function setFormattedValue(input, value) {
+  if (value === null || value === undefined || value === '') {
+    input.value = '';
+    return;
+  }
+  // If the field is currently focused, don't format (user is typing)
+  if (document.activeElement === input) {
+    input.value = Math.round(value);
+  } else {
+    input.value = formatNumberInput(value);
+  }
+}
+
+/**
  * Add thousands separator formatting to an input field
  * @param {HTMLInputElement} input - The input element
  * @param {boolean} isInteger - Whether to format as integer (default true)
@@ -200,17 +218,17 @@ function updateFuelFieldsFromAnnual() {
   const litresWeek = convertFuelUsage(state.fuelLitresYear, 'year', 'week');
   const litresMonth = convertFuelUsage(state.fuelLitresYear, 'year', 'month');
   
-  document.getElementById('fuel-litres-week').value = Math.round(litresWeek);
-  document.getElementById('fuel-litres-month').value = Math.round(litresMonth);
-  document.getElementById('fuel-litres-year').value = Math.round(state.fuelLitresYear);
+  setFormattedValue(document.getElementById('fuel-litres-week'), Math.round(litresWeek));
+  setFormattedValue(document.getElementById('fuel-litres-month'), Math.round(litresMonth));
+  setFormattedValue(document.getElementById('fuel-litres-year'), Math.round(state.fuelLitresYear));
   
   const dollarsWeek = litresToDollars(litresWeek, state.dieselPrice);
   const dollarsMonth = litresToDollars(litresMonth, state.dieselPrice);
   const dollarsYear = litresToDollars(state.fuelLitresYear, state.dieselPrice);
   
-  document.getElementById('fuel-dollars-week').value = Math.round(dollarsWeek);
-  document.getElementById('fuel-dollars-month').value = Math.round(dollarsMonth);
-  document.getElementById('fuel-dollars-year').value = Math.round(dollarsYear);
+  setFormattedValue(document.getElementById('fuel-dollars-week'), Math.round(dollarsWeek));
+  setFormattedValue(document.getElementById('fuel-dollars-month'), Math.round(dollarsMonth));
+  setFormattedValue(document.getElementById('fuel-dollars-year'), Math.round(dollarsYear));
   
   // Update dispenses default if not modified by user
   if (!state.operatorDispensesModified && state.fuelLitresYear) {
@@ -284,7 +302,7 @@ function setupRebateFields() {
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       state.actualDollars = (value / 100) * rebateShouldGet;
-      actualDollars.value = Math.round(state.actualDollars);
+      setFormattedValue(actualDollars, Math.round(state.actualDollars));
     }
     
     updateAllCalculations();
@@ -315,7 +333,7 @@ function setupRebateFields() {
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       state.gutfeelDollars = (value / 100) * rebateShouldGet;
-      gutfeelDollars.value = Math.round(state.gutfeelDollars);
+      setFormattedValue(gutfeelDollars, Math.round(state.gutfeelDollars));
     }
     
     updateAllCalculations();
@@ -415,8 +433,8 @@ function setupAdminFields() {
       const dollarsYear = value * 52;
       
       // Update other $ fields
-      adminDollarsMonth.value = Math.round(dollarsYear / 12);
-      adminDollarsYear.value = Math.round(dollarsYear);
+      setFormattedValue(adminDollarsMonth, Math.round(dollarsYear / 12));
+      setFormattedValue(adminDollarsYear, Math.round(dollarsYear));
       
       // Back-calculate hours from rate
       if (state.adminRate > 0) {
@@ -441,8 +459,8 @@ function setupAdminFields() {
       const dollarsYear = value * 12;
       
       // Update other $ fields
-      adminDollarsWeek.value = Math.round(dollarsYear / 52);
-      adminDollarsYear.value = Math.round(dollarsYear);
+      setFormattedValue(adminDollarsWeek, Math.round(dollarsYear / 52));
+      setFormattedValue(adminDollarsYear, Math.round(dollarsYear));
       
       // Back-calculate hours from rate
       if (state.adminRate > 0) {
@@ -467,8 +485,8 @@ function setupAdminFields() {
       const dollarsYear = value;
       
       // Update other $ fields
-      adminDollarsWeek.value = Math.round(dollarsYear / 52);
-      adminDollarsMonth.value = Math.round(dollarsYear / 12);
+      setFormattedValue(adminDollarsWeek, Math.round(dollarsYear / 52));
+      setFormattedValue(adminDollarsMonth, Math.round(dollarsYear / 12));
       
       // Back-calculate hours from rate
       if (state.adminRate > 0) {
@@ -494,9 +512,9 @@ function updateAdminDollarsFromHours() {
   const dollarsWeek = dollarsYear / 52;
   const dollarsMonth = dollarsYear / 12;
   
-  document.getElementById('admin-dollars-week').value = Math.round(dollarsWeek);
-  document.getElementById('admin-dollars-month').value = Math.round(dollarsMonth);
-  document.getElementById('admin-dollars-year').value = Math.round(dollarsYear);
+  setFormattedValue(document.getElementById('admin-dollars-week'), Math.round(dollarsWeek));
+  setFormattedValue(document.getElementById('admin-dollars-month'), Math.round(dollarsMonth));
+  setFormattedValue(document.getElementById('admin-dollars-year'), Math.round(dollarsYear));
 }
 
 // Operator fields
@@ -584,14 +602,14 @@ function updateSectionResults() {
     let missedSource = '';
     
     if (state.actualDollars) {
-      rebateMissed = calculateRebateMissed(rebate, state.actualDollars);
+      rebateMissed = calculateRebateMissed(rebate, 'dollars', state.actualDollars);
       missedSource = '(from actual claim)';
     } else if (state.gutfeelDollars) {
-      rebateMissed = calculateRebateMissed(rebate, state.gutfeelDollars);
+      rebateMissed = calculateRebateMissed(rebate, 'dollars', state.gutfeelDollars);
       missedSource = '(from gut feel)';
     }
     
-    if (rebateMissed > 0) {
+    if (rebateMissed > 0 && (state.actualDollars || state.gutfeelDollars)) {
       rebateMissedLine.style.display = 'flex';
       rebateMissedValue.textContent = formatCurrency(rebateMissed);
       rebateMissedSource.textContent = missedSource;

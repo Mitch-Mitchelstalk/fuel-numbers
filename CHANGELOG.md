@@ -2,6 +2,29 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.7] - 2026-11-18
+
+### Fixed - Critical Display Bugs
+- **Bug 1: Rebate missed line not displaying**
+  - Fixed calculateRebateMissed() calls to include correct parameters ('dollars' mode)
+  - Rebate missed now properly shows under "Rebate they should be getting"
+  - Displays with actual claim if filled, otherwise gut feel
+  - Shows source label and renders in soft red
+- **Bug 2: Thousands separators missing on linked fields**
+  - Added setFormattedValue() helper to format programmatically filled fields
+  - All linked fields now show commas when not focused:
+    * Fuel litres/dollars fields (week, month, year)
+    * Rebate claim dollars (calculated from %)
+    * Admin $ fields (week, month, year)
+  - Only the field being actively typed shows raw digits
+  - Formatting applies after blur, linking updates, and on page load
+
+### Testing
+- All 7 test cases pass
+- Verified in browser with large numbers (1,200,000 L/yr)
+- Confirmed rebate missed displays correctly
+- Confirmed all linked fields show thousands separators
+
 ## [1.2.6] - 2026-11-18
 
 ### Added - Rebate Missed Display & Thousands Separators
