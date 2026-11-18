@@ -4,59 +4,63 @@ All notable changes to Fuel Numbers will be documented in this file.
 
 ## [1.6.0] - 2026-11-18
 
-### Changed - Sticky Total Potential Savings
+### Changed - Compact Results Panel (No Scrolling)
 
-**Results Panel: Total Always Visible**
-- ✅ **Total potential savings now always visible** in Results panel
-- ✅ **Other results scroll independently** within their section
-- ✅ **Total pinned at bottom** of Results panel
-- ✅ **Works at all desktop window heights** including short windows (~700px)
+**Results Panel: Everything Fits On Screen**
+- ✅ **Whole Results panel fits on one desktop screen** at 1280x700 and up
+- ✅ **No scrolling inside Results panel** - all results visible without scrolling
+- ✅ **Total potential savings stays large, green, and prominent**
+- ✅ **Results panel remains sticky** as inputs scroll
 
 **Implementation:**
-- Split Results panel into two sections:
-  - `.results-scrollable` - Contains all result items except total, can scroll
-  - `.results-total-sticky` - Contains total, pinned at bottom (flexbox, not CSS sticky)
-- Results panel uses flexbox: header (fixed), scrollable (flex: 1), total (fixed)
-- Total stays visible while scrolling results or page
+- Made individual result lines more compact:
+  - Smaller type sizes (labels, values, notes)
+  - Tighter spacing between items
+  - Reduced padding in result cards
+  - Compact ATO rate note
+- Kept total prominent: larger font (30px vs 18px regular), green, bold
+- No structural changes - same HTML, just tighter CSS
+
+**Visual Changes:**
+- Result items: Reduced padding (0.5rem 0.75rem from 1.25rem)
+- Gap between items: 0.375rem (from 1rem)
+- Labels: 0.6875rem font (from 0.875rem)
+- Values: 1.0625rem font (from 1.5rem)
+- Notes: 0.625rem font (from 0.75rem)
+- Total value: 1.875rem font (still prominent, from 2.25rem)
+- Results panel padding: 1.25rem 1rem (from 2rem 1.5rem)
+- Header: 1.125rem font (from 1.5rem)
 
 **Benefits:**
-- Total always visible for quick reference
-- Rep never loses sight of the main number
-- Clean separation: scrollable results above, total below
-- No clipping or hidden content
-
-**Visual Design:**
-- Total has separator border at top
-- Gradient background distinguishes sticky section
-- Green total styling unchanged
-- Soft red money-missing styling unchanged
-- All live updates work as before
+- Everything visible at a glance - no scrolling needed
+- Total always visible (no scroll means always on screen)
+- Clean, efficient use of space
+- Works at minimum desktop size (1280x700)
+- Total remains the visual anchor (largest, green, prominent)
 
 ### Code Changes
-- **HTML:** Restructured results panel
-  - Created `.results-scrollable` wrapper for all items except total
-  - Created `.results-total-sticky` wrapper for total
-  - Moved "Total potential savings" into sticky wrapper
-- **CSS:** New flexbox layout for Results panel
-  - `.results-panel`: `display: flex; flex-direction: column; height: 100vh`
-  - `.results-scrollable`: `flex: 1; overflow-y: auto` (takes available space, scrolls)
-  - `.results-total-sticky`: `flex-shrink: 0` (pinned, doesn't shrink)
-  - Updated scrollbar styling for scrollable section
-- **No JavaScript changes:** Pure CSS/HTML restructuring
+- **CSS only:** Compact sizing throughout Results panel
+  - `.results-panel`: Reduced padding, smaller header
+  - `.results-content`: Tighter gap (0.375rem)
+  - `.result-item`: Smaller padding, border, shadow
+  - `.result-label`, `.result-value`, `.result-note`: Smaller fonts, tighter margins
+  - `.result-item.total`: Kept prominent but slightly smaller (30px vs 32px)
+  - `.rate-source`: New compact style
+- **No HTML or JavaScript changes**
 
 ### Testing
 - All 7 automated tests pass ✓
-- Browser-verified:
-  - Total visible at short window height (700px) ✓
-  - Total stays visible when scrolling results ✓
-  - Total stays visible when scrolling page ✓
-  - Other results scroll independently ✓
-  - Total is green, money-missing is red ✓
-  - Live updates work ✓
+- Browser-verified at 1280x700:
+  - No scrolling needed in Results panel ✓
+  - Content height: 584px, Panel height: 700px (fits) ✓
+  - Total visible and prominent ✓
+  - Total is green (#067647), money-missing is red (#B42318) ✓
+- Browser-verified at 1920x1080:
+  - No scrolling needed ✓
+  - Everything fits comfortably ✓
 
 ### Updated
-- **index.html:** Results panel structure
-- **styles.css:** Results panel layout and scrollbar styling
+- **styles.css:** Compact sizing for Results panel components
 
 ## [1.5.1] - 2026-11-18
 
