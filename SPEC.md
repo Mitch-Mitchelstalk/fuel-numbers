@@ -63,9 +63,10 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 - **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
-- **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default medium.
-- **Theft % (editable):** Updates automatically with risk level but remains editable.
-- **Section result:** Shows theft exposure per year.
+- **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default low (1%, marked ESTIMATE).
+- **Theft % (editable):** Updates automatically with risk level but remains editable. Default 1% (marked ESTIMATE). ESTIMATE badge disappears when user edits field or clicks quick-pick button.
+- **Quick-pick buttons:** 0%, 1%, 3%, 6% for common theft scenarios. Selecting 0% gives $0 theft exposure.
+- **Section result:** Shows theft exposure per year (total fuel × theft % × diesel price).
 
 ### Results Panel (sticky right column)
 Always visible, shows all calculated values updating live:

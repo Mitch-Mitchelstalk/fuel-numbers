@@ -2,6 +2,52 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.5.1] - 2026-11-18
+
+### Changed - Theft Risk Defaults to Low (1%)
+
+**Section 4: Theft Risk**
+- ✅ **Default theft % changed from 3% (medium) to 1% (low)** - marked ESTIMATE
+- ✅ **Default risk level changed from Medium to Low**
+- ✅ **Added 0% quick-pick button** alongside 1%, 3%, 6%
+- ✅ **Selecting 0% gives $0 theft exposure** (useful for highly secure sites)
+- ✅ **ESTIMATE badge on theft %** - disappears when user edits field or clicks quick-pick
+
+**Rationale:**
+- More conservative baseline (1% vs 3%)
+- Most sites have basic security (locked up, staff only)
+- 0% option supports sites with exceptional security
+- Rep can still select Medium (3%) or High (6%) for riskier sites
+
+**Farm Example Updated:**
+- 48,000 L/year × 1% theft × $2.50/L = **$1,200** theft exposure (was $3,600 at 3%)
+- Total potential savings (blank claims): $3,020 (was $4,820)
+
+### Code Changes
+- **HTML:** Risk level radio default changed to "low" (checked)
+- **HTML:** Theft % default value changed to "1"
+- **HTML:** Added ESTIMATE badge to theft % label
+- **HTML:** Added 4 quick-pick buttons (0%, 1%, 3%, 6%)
+- **JS state:** `riskLevel: 'low'`, `theftPercent: RATES.theft.low * 100`
+- **JS state:** Added `theftModified: false` tracking
+- **JS:** Updated `setupTheftFields()` with quick-pick button handlers
+- **JS:** Theft % input handler removes ESTIMATE badge on edit
+
+### Testing
+- All 7 automated tests pass ✓
+- Browser-verified:
+  - Default theft %: 1 ✓
+  - Default risk level: "low" ✓
+  - Farm example theft exposure: $1,200 ✓
+  - Click 0% button → $0 exposure ✓
+  - ESTIMATE badge hidden after modification ✓
+  - Click 3% button → $3,600 exposure ✓
+  - All 4 quick-pick buttons present ✓
+
+### Updated
+- **SPEC.md:** Theft risk default = low (1%), quick-pick buttons documented
+- **Farm example:** Theft exposure $1,200 (from $1,200 - unchanged, already used 1%)
+
 ## [1.5.0] - 2026-11-18
 
 ### Changed - Visual Redesign of Section 2 & 3

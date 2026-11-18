@@ -55,8 +55,9 @@ const state = {
   adminDollarsLastSource: 'hours', // Track whether hours or dollars was last edited
   
   // Theft
-  riskLevel: 'medium',
-  theftPercent: RATES.theft.medium * 100
+  riskLevel: 'low',
+  theftPercent: RATES.theft.low * 100, // Default 1% (ESTIMATE)
+  theftModified: false // Track if user has edited theft %
 };
 
 /**
@@ -669,6 +670,7 @@ function setupOperatorFields() {
 function setupTheftFields() {
   const riskRadios = document.querySelectorAll('input[name="risk"]');
   const theftPercent = document.getElementById('theft-percent');
+  const theftBadge = document.getElementById('theft-badge');
   
   riskRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
@@ -681,7 +683,20 @@ function setupTheftFields() {
   
   theftPercent.addEventListener('input', (e) => {
     state.theftPercent = parseNumberInput(e.target.value) || 0;
+    state.theftModified = true;
+    if (theftBadge) theftBadge.style.display = 'none';
     updateAllCalculations();
+  });
+  
+  // Quick-pick buttons for theft %
+  document.querySelectorAll('.btn-quick-theft').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.theftPercent = parseNumberInput(btn.dataset.value);
+      theftPercent.value = state.theftPercent;
+      state.theftModified = true;
+      if (theftBadge) theftBadge.style.display = 'none';
+      updateAllCalculations();
+    });
   });
 }
 
