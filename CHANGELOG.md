@@ -2,6 +2,55 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.5.0] - 2026-11-18
+
+### Changed - Visual Redesign of Section 2 & 3
+
+**Section 2: Claim Columns (Side by Side)**
+- ✅ **Actual claim and Gut feel now displayed side by side** as two equal-width columns
+- ✅ **Visual divider with "OR" badge** between columns emphasizes mutual exclusivity
+- ✅ **Each column is a card:**
+  - Title at top (h3)
+  - $ per year field
+  - % per year field
+  - Stacked vertically inside card
+- ✅ **Active/inactive visual states:**
+  - **Active** (filled): White background, purple accent border, subtle shadow
+  - **Inactive** (cleared): Grey background, light border, 50% opacity
+  - **Neutral** (both empty): Grey background, no opacity reduction
+- ✅ **Mutual exclusive logic unchanged** from v1.4.0
+- ✅ **Layout benefits:** Clear "choose one OR the other" visual hierarchy
+
+**Section 3: Admin Grid (Consistent Field Layout)**
+- ✅ **All admin fields now in uniform 3×2 grid:**
+  - Row 1: Hours per week | Hours per month | Hourly rate
+  - Row 2: $ per week | $ per month | $ per year
+- ✅ **Consistent styling:** All 6 fields in identical grey boxes
+- ✅ **Same label style and input size** across all fields
+- ✅ **Hourly rate presets** stay below the rate field
+- ✅ **Field linking unchanged** from previous versions
+- ✅ **Layout benefits:** Professional, scannable, easy to compare related fields
+
+**Log-book Time Default**
+- ✅ **Minutes per dispense now defaults to 1** (marked ESTIMATE)
+- ✅ **Log-book cost shows by default** when fuel data is entered
+- ✅ **Rationale:** Realistic baseline - most sites do some log-book entry
+
+### Updated
+- **SPEC.md:** Documented claim column layout, active/inactive states, admin grid structure
+- **CSS:** New `.claim-columns`, `.claim-column`, `.claim-divider`, `.or-badge`, `.admin-grid`, `.admin-field-box` styles
+- **JavaScript:** Added `updateClaimColumnStates()` function to manage visual states
+- **HTML:** Restructured Section 2 (columns), Section 3 (grid), log-book default
+
+### Testing
+- All 7 automated tests pass ✓
+- Browser-verified:
+  - Initial state: Both columns neutral ✓
+  - Fill actual: Actual active (white + border), gut feel inactive (grey + faded) ✓
+  - Switch to gut feel: Gut feel active, actual inactive ✓
+  - Minutes per dispense defaults to 1 ✓
+  - Admin grid has 6 matching field boxes ✓
+
 ## [1.4.0] - 2026-11-18
 
 ### Changed - Claim Pairs Now Mutually Exclusive

@@ -45,7 +45,7 @@ const state = {
   adminRateModified: false,
   
   // Operator (log-book time)
-  operatorMinutesPerDispense: null,
+  operatorMinutesPerDispense: 1, // Default 1 minute (ESTIMATE)
   operatorDispensesPerWeek: null,
   operatorDispensesModified: false, // Track if user has typed their own value
   operatorRate: RATES.defaultHourlyRate,
@@ -309,6 +309,7 @@ function setupRebateFields() {
       }
     }
     
+    updateClaimColumnStates();
     updateAllCalculations();
   });
   
@@ -331,6 +332,7 @@ function setupRebateFields() {
       setFormattedValue(actualDollars, Math.round(state.actualDollars));
     }
     
+    updateClaimColumnStates();
     updateAllCalculations();
   });
   
@@ -358,6 +360,7 @@ function setupRebateFields() {
       }
     }
     
+    updateClaimColumnStates();
     updateAllCalculations();
   });
   
@@ -380,8 +383,33 @@ function setupRebateFields() {
       setFormattedValue(gutfeelDollars, Math.round(state.gutfeelDollars));
     }
     
+    updateClaimColumnStates();
     updateAllCalculations();
   });
+}
+
+function updateClaimColumnStates() {
+  const actualColumn = document.getElementById('actual-column');
+  const gutfeelColumn = document.getElementById('gutfeel-column');
+  
+  const actualFilled = state.actualDollars || state.actualPercent;
+  const gutfeelFilled = state.gutfeelDollars || state.gutfeelPercent;
+  
+  if (actualFilled) {
+    actualColumn.classList.add('active');
+    actualColumn.classList.remove('inactive');
+    gutfeelColumn.classList.remove('active');
+    gutfeelColumn.classList.add('inactive');
+  } else if (gutfeelFilled) {
+    gutfeelColumn.classList.add('active');
+    gutfeelColumn.classList.remove('inactive');
+    actualColumn.classList.remove('active');
+    actualColumn.classList.add('inactive');
+  } else {
+    // Neither filled - both neutral
+    actualColumn.classList.remove('active', 'inactive');
+    gutfeelColumn.classList.remove('active', 'inactive');
+  }
 }
 
 function updateOffRoadButtonStates() {

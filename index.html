@@ -106,9 +106,9 @@
             </div>
           </div>
           
-          <div class="field-group">
-            <label>Actual claim</label>
-            <div class="claim-pair">
+          <div class="claim-columns">
+            <div class="claim-column" id="actual-column">
+              <h3 class="claim-column-title">Actual claim</h3>
               <div class="claim-field">
                 <label class="field-sublabel">$ per year</label>
                 <div class="input-with-prefix">
@@ -121,11 +121,13 @@
                 <input type="number" id="actual-percent" class="form-input" placeholder="e.g., 82.6" min="0" max="200" step="0.1">
               </div>
             </div>
-          </div>
-          
-          <div class="field-group">
-            <label>Gut feel</label>
-            <div class="claim-pair">
+            
+            <div class="claim-divider">
+              <span class="or-badge">OR</span>
+            </div>
+            
+            <div class="claim-column" id="gutfeel-column">
+              <h3 class="claim-column-title">Gut feel</h3>
               <div class="claim-field">
                 <label class="field-sublabel">$ per year</label>
                 <div class="input-with-prefix">
@@ -159,16 +161,16 @@
           <h2><span class="section-number">3</span> Admin & Operator Time</h2>
           
           <h3 class="subsection-title">Admin time</h3>
-          <div class="field-row">
-            <div class="field-group">
+          <div class="admin-grid">
+            <div class="admin-field-box">
               <label>Hours per week</label>
               <input type="number" id="admin-hours-week" class="form-input" placeholder="e.g., 1">
             </div>
-            <div class="field-group">
+            <div class="admin-field-box">
               <label>Hours per month</label>
               <input type="number" id="admin-hours-month" class="form-input" placeholder="e.g., 4">
             </div>
-            <div class="field-group">
+            <div class="admin-field-box">
               <label>Hourly rate <span id="admin-rate-badge" class="estimate-badge">estimate</span></label>
               <div class="input-with-prefix">
                 <span class="prefix">$</span>
@@ -180,31 +182,25 @@
                 <button type="button" class="btn-quick-admin" data-value="75">$75</button>
               </div>
             </div>
-          </div>
-          
-          <div class="field-group">
-            <label>Admin cost</label>
-            <div class="field-row-horizontal">
-              <div class="field-col">
-                <label class="field-sublabel">per week</label>
-                <div class="input-with-prefix">
-                  <span class="prefix">$</span>
-                  <input type="text" inputmode="decimal" id="admin-dollars-week" class="form-input" placeholder="e.g., 35">
-                </div>
+            <div class="admin-field-box">
+              <label>$ per week</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-week" class="form-input" placeholder="e.g., 35">
               </div>
-              <div class="field-col">
-                <label class="field-sublabel">per month</label>
-                <div class="input-with-prefix">
-                  <span class="prefix">$</span>
-                  <input type="text" inputmode="decimal" id="admin-dollars-month" class="form-input" placeholder="e.g., 152">
-                </div>
+            </div>
+            <div class="admin-field-box">
+              <label>$ per month</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-month" class="form-input" placeholder="e.g., 152">
               </div>
-              <div class="field-col">
-                <label class="field-sublabel">per year</label>
-                <div class="input-with-prefix">
-                  <span class="prefix">$</span>
-                  <input type="text" inputmode="decimal" id="admin-dollars-year" class="form-input" placeholder="e.g., 1820">
-                </div>
+            </div>
+            <div class="admin-field-box">
+              <label>$ per year</label>
+              <div class="input-with-prefix">
+                <span class="prefix">$</span>
+                <input type="text" inputmode="decimal" id="admin-dollars-year" class="form-input" placeholder="e.g., 1820">
               </div>
             </div>
           </div>
@@ -217,8 +213,8 @@
           <h3 class="subsection-title">Log-book time (optional)</h3>
           <div class="field-row">
             <div class="field-group">
-              <label>Minutes per dispense</label>
-              <input type="number" id="operator-minutes-per-dispense" class="form-input" placeholder="e.g., 2">
+              <label>Minutes per dispense <span id="minutes-badge" class="estimate-badge">estimate</span></label>
+              <input type="number" id="operator-minutes-per-dispense" class="form-input" value="1">
             </div>
             <div class="field-group">
               <label>Dispenses per week <span id="dispenses-badge" class="estimate-badge">estimate</span></label>

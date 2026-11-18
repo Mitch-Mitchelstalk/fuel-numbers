@@ -35,20 +35,31 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 
 ### Section 2: Rebate
 - **Off-road %:** Input field with selectable percentage buttons (0%, 10%, 20%, ..., 100% in 10% increments) plus industry preset buttons (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%).
+- **Claim columns (side by side):** Actual claim and Gut feel presented as two columns with:
+  - **Visual layout:** Two equal-width columns separated by vertical divider with "OR" badge
+  - **Each column:** Card with title, $ per year field, % per year field stacked vertically
+  - **Active/inactive states:** 
+    - Filled column gets white background + purple accent border + shadow (active)
+    - Cleared column gets grey background + light border + 50% opacity (inactive)
+    - Both neutral (grey, no opacity reduction) when neither filled
 - **Actual claim:** Two linked fields ($ per year ↔ % per year). Last-typed wins: whichever field is most recently typed stays fixed when R (rebate should get) changes, and its partner recalculates. Meaning: % = share of R they HAVE claimed; $ = R × % / 100; % = $ / R × 100.
 - **Gut feel:** Two linked fields ($ per year ↔ % per year). Same last-typed-wins behavior as actual claim.
 - **Mutually exclusive:** Actual and Gut feel pairs are mutually exclusive. Typing into either field of one pair clears both fields of the other pair. No cross-calculation between pairs. Use whichever pair the rep last filled.
-- Both claim pairs are always visible and editable. Rebate missed is calculated from whichever pair is filled.
+- Rebate missed is calculated from whichever pair is filled.
 - **Last-typed wins behavior:** Similar to diesel price in Section 1. When fuel use, diesel price, or off-road % changes (causing R to change), each claim pair's last-typed field stays fixed and the other recalculates. Example: gut % typed 90 → gut $ always = 90% of current R; if gut $ typed $20,000, then % recalculates when R changes to keep $ fixed at $20,000.
 - **Section result:** Shows "Rebate they should be getting" (R) calculated from total fuel litres (Section 1) and off-road %.
 - **Rebate missed:** Displays "Rebate missed: $X" under "Rebate they should be getting" with source label "(from actual claim)" or "(from gut feel)". Rebate missed = R - claimed $ (floored at 0). Shows actual claim if filled, otherwise gut feel. Displayed in soft red. Hidden when no claim data available.
 - **Note:** Rebate and theft calculations now use total fuel litres from Section 1 (D = L). On-site dispensed litres fields have been removed.
 
 ### Section 3: Admin & Operator Time
-- **Admin time:** Hours per week and per month (linked), hourly rate with presets ($35, $52, $75). Default $52 with "estimate" label until edited.
-- **Admin cost $ fields:** $ per week, $ per month, $ per year (horizontal row like Section 1), linked to each other and to hours × rate. Editing hours or rate updates the $ fields; editing a $ field updates the others and back-calculates hours from rate (1 decimal place).
+- **Admin time grid layout:** All linked fields in consistent 3×2 grid (matching grey box style):
+  - **Row 1:** Hours per week | Hours per month | Hourly rate
+  - **Row 2:** $ per week | $ per month | $ per year
+  - All fields in identical grey boxes with same label style and input size
+  - Hourly rate presets ($35, $52, $75) display under rate field. Default $52 with "estimate" label until edited.
+- **Field linking:** Hours per week ↔ hours per month (linked); all three $ fields linked to each other and to hours × rate. Editing hours or rate updates the $ fields; editing a $ field updates the others and back-calculates hours from rate (1 decimal place).
 - **Admin cost reference line:** Shows "Admin cost: $X per month" inside Section 3.
-- **Log-book time (optional):** Minutes per dispense (filling in the log book), dispenses per week (defaults to weekly litres / 100, rounded, with "estimate" badge and note "(assumes 100 L per dispense)"; updates live when fuel changes until rep types their own value), hourly rate with presets ($35, $40, $52). Blank counts as $0.
+- **Log-book time (optional):** Minutes per dispense (default 1, marked ESTIMATE), dispenses per week (defaults to weekly litres / 100, rounded, with "estimate" badge and note "(assumes 100 L per dispense)"; updates live when fuel changes until rep types their own value), hourly rate with presets ($35, $40, $52).
 - **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
