@@ -2,6 +2,43 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.7] - 2026-11-18
+
+### Added - 0.1% Theft Preset
+
+**Quick Presets: Added 0.1% Button**
+- ✅ **New 0.1% preset button** added between 0% and 0.2% in Quick presets row
+- ✅ **9 preset buttons total:** 0%, 0.1%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6%
+- ✅ **Same styling and behavior:** Active highlighting in amber, two-way sync with risk cards and input
+- ✅ **Default unchanged:** 0.6% remains the default (Low risk)
+
+**Why 0.1%:**
+- **Ultra-low theft scenario:** Highly secure facilities, minimal access, strong controls
+- **Granular control:** 0.1% increments for precision (0%, 0.1%, 0.2%, etc.)
+- **Physical context:** 0.1% of 48,000 L = 48 L per year (about 1 drum)
+- **Completes sub-1% range:** 0%, 0.1%, 0.2%, 0.4%, 0.6%, 0.8% for sub-1% scenarios
+
+**Examples:**
+- 48,000 L × 0.1% = 48 L/year = ~$120 exposure
+- 120,000 L × 0.1% = 120 L/year = ~$300 exposure
+- For comparison: 48,000 L × 0.6% = 288 L = ~$720 (default)
+
+**Implementation:**
+- **index.html:** Added `<button data-value="0.1">0.1%</button>` between 0% and 0.2%
+- **No CSS changes:** Existing `.btn-quick-theft` styles apply
+- **No JS changes:** Existing event handlers and sync logic work automatically
+- **SPEC.md:** Updated button list to show 9 buttons (0%, 0.1%, 0.2%, ...)
+
+**Testing:**
+- All 8 automated tests pass ✓
+- Active button highlighting works for 0.1% ✓
+- Two-way sync with risk cards works ✓
+- Litres display updates correctly (e.g., 48 L for 0.1%) ✓
+
+**Updated:**
+- **SPEC.md:** Quick presets now list 9 buttons
+- **CHANGELOG.md:** This entry
+
 ## [1.6.6] - 2026-11-18
 
 ### Added - Theft Litres Display

@@ -66,7 +66,7 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 
 **Layout (top to bottom):**
 
-1. **Quick-pick preset buttons (top row):** 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6% in a single horizontal row. Active button highlighted in amber.
+1. **Quick-pick preset buttons (top row):** 0%, 0.1%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6% in a single horizontal row. Active button highlighted in amber.
 2. **Risk level cards (middle row):** Three compact cards side by side (Low 0.6%, Medium 3%, High 6%). Low selected by default. Active card highlighted in amber.
 3. **Theft % input (bottom):** Direct editable input field. Default 0.6% (marked ESTIMATE). Accepts decimals (step 0.1). ESTIMATE badge disappears when user edits field or clicks preset button/card.
 
