@@ -151,6 +151,9 @@ function testLinkedFields() {
   
   const newLitresPerYear = convertFuelUsage(newLitresPerMonth, 'month', 'year');
   assertEqual(Math.round(newLitresPerYear), 42624, 'Linked: new litres per year');
+  
+  const newLitresPerWeek = convertFuelUsage(newLitresPerMonth, 'month', 'week');
+  assertEqual(Math.round(newLitresPerWeek), 820, 'Linked: new litres per week (42624/52 = 819.69 rounds to 820)');
 }
 
 // Test Case 4: Dispensed guard

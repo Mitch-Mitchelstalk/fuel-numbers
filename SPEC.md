@@ -105,7 +105,7 @@ L = annual litres used. D = annual litres dispensed on site. R = rebate they sho
    - Inputs: use 11,600 L/month, of which 10,000 L/month is dispensed on site (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut-feel 80%.
    - Results: rebate they should be getting $56,664; missed $11,333; admin $4,992; theft $9,360; **total potential savings $25,685**.
    - Add operator time 2 hours/week at $52: operator $5,408; **total $31,093**.
-3. **Linked fields.** Enter $8,880/month at $2.22/L: converts to 4,000 L/month, 48,000 L/year, 923 L/week, plus $106,560/year and $2,049/week. Change price to $2.50/L with $ last typed: $ values stay unchanged (8,880, 106,560, 2,049), litres recalculate to 3,552 L/month, 42,624 L/year, 821 L/week.
+3. **Linked fields.** Enter $8,880/month at $2.22/L: converts to 4,000 L/month, 48,000 L/year, 923 L/week, plus $106,560/year and $2,049/week. Change price to $2.50/L with $ last typed: $ values stay unchanged (8,880, 106,560, 2,049), litres recalculate to 3,552 L/month, 42,624 L/year, 820 L/week.
 4. **Dispensed guard.** Total use 4,000 L/month and dispensed 5,000 L/month: a warning shows. The rebate still calculates on the dispensed figure.
 5. **Skips.** Skipping every supporting step still gives the core results. Off-road must then be entered by hand. Choosing Civil in step A pre-fills 80% off-road.
 6. **Over-claim guard.** Farm example in $ mode with $30,000 claimed now: missed shows $0 with the check note.
