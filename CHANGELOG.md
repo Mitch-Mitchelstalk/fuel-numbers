@@ -2,6 +2,62 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.0] - 2026-11-18
+
+### Changed - Sticky Total Potential Savings
+
+**Results Panel: Total Always Visible**
+- ✅ **Total potential savings now always visible** in Results panel
+- ✅ **Other results scroll independently** within their section
+- ✅ **Total pinned at bottom** of Results panel
+- ✅ **Works at all desktop window heights** including short windows (~700px)
+
+**Implementation:**
+- Split Results panel into two sections:
+  - `.results-scrollable` - Contains all result items except total, can scroll
+  - `.results-total-sticky` - Contains total, pinned at bottom (flexbox, not CSS sticky)
+- Results panel uses flexbox: header (fixed), scrollable (flex: 1), total (fixed)
+- Total stays visible while scrolling results or page
+
+**Benefits:**
+- Total always visible for quick reference
+- Rep never loses sight of the main number
+- Clean separation: scrollable results above, total below
+- No clipping or hidden content
+
+**Visual Design:**
+- Total has separator border at top
+- Gradient background distinguishes sticky section
+- Green total styling unchanged
+- Soft red money-missing styling unchanged
+- All live updates work as before
+
+### Code Changes
+- **HTML:** Restructured results panel
+  - Created `.results-scrollable` wrapper for all items except total
+  - Created `.results-total-sticky` wrapper for total
+  - Moved "Total potential savings" into sticky wrapper
+- **CSS:** New flexbox layout for Results panel
+  - `.results-panel`: `display: flex; flex-direction: column; height: 100vh`
+  - `.results-scrollable`: `flex: 1; overflow-y: auto` (takes available space, scrolls)
+  - `.results-total-sticky`: `flex-shrink: 0` (pinned, doesn't shrink)
+  - Updated scrollbar styling for scrollable section
+- **No JavaScript changes:** Pure CSS/HTML restructuring
+
+### Testing
+- All 7 automated tests pass ✓
+- Browser-verified:
+  - Total visible at short window height (700px) ✓
+  - Total stays visible when scrolling results ✓
+  - Total stays visible when scrolling page ✓
+  - Other results scroll independently ✓
+  - Total is green, money-missing is red ✓
+  - Live updates work ✓
+
+### Updated
+- **index.html:** Results panel structure
+- **styles.css:** Results panel layout and scrollbar styling
+
 ## [1.5.1] - 2026-11-18
 
 ### Changed - Theft Risk Defaults to Low (1%)
