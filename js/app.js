@@ -34,8 +34,10 @@ const state = {
   offRoadPercent: null,
   actualDollars: null,
   actualPercent: null,
+  actualLastTyped: null, // 'dollars' or 'percent' - tracks which field was last entered
   gutfeelDollars: null,
   gutfeelPercent: null,
+  gutfeelLastTyped: null, // 'dollars' or 'percent' - tracks which field was last entered
   
   // Admin
   adminHoursYear: null,
@@ -237,6 +239,9 @@ function updateFuelFieldsFromAnnual() {
     state.operatorDispensesPerWeek = dispensesPerWeek;
     document.getElementById('operator-dispenses-per-week').value = dispensesPerWeek;
   }
+  
+  // Update claim fields when fuel changes (R changes)
+  updateClaimFieldsWhenRChanges();
 }
 
 // Rebate fields (off-road %, actual claim, gut feel)
@@ -252,6 +257,7 @@ function setupRebateFields() {
     const value = parseNumberInput(e.target.value);
     state.offRoadPercent = value;
     updateOffRoadButtonStates();
+    updateClaimFieldsWhenRChanges(); // R changed, recalculate non-last-typed fields
     updateAllCalculations();
   });
   
@@ -262,6 +268,7 @@ function setupRebateFields() {
       state.offRoadPercent = value;
       offRoadPercent.value = value;
       updateOffRoadButtonStates();
+      updateClaimFieldsWhenRChanges(); // R changed, recalculate non-last-typed fields
       updateAllCalculations();
     });
   });
@@ -273,16 +280,19 @@ function setupRebateFields() {
       state.offRoadPercent = value;
       offRoadPercent.value = value;
       updateOffRoadButtonStates();
+      updateClaimFieldsWhenRChanges(); // R changed, recalculate non-last-typed fields
       updateAllCalculations();
     });
   });
   
   // Actual claim pair ($ <-> %)
+  // Last-typed wins: whichever field is typed stays fixed when R changes
   actualDollars.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.actualDollars = value || null;
+    state.actualLastTyped = 'dollars';
     
-    // Update % from $
+    // Update % from $ (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       if (rebateShouldGet > 0) {
@@ -297,8 +307,9 @@ function setupRebateFields() {
   actualPercent.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.actualPercent = value || null;
+    state.actualLastTyped = 'percent';
     
-    // Update $ from %
+    // Update $ from % (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       state.actualDollars = (value / 100) * rebateShouldGet;
@@ -309,11 +320,13 @@ function setupRebateFields() {
   });
   
   // Gut feel pair ($ <-> %)
+  // Last-typed wins: whichever field is typed stays fixed when R changes
   gutfeelDollars.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.gutfeelDollars = value || null;
+    state.gutfeelLastTyped = 'dollars';
     
-    // Update % from $
+    // Update % from $ (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       if (rebateShouldGet > 0) {
@@ -328,8 +341,9 @@ function setupRebateFields() {
   gutfeelPercent.addEventListener('input', (e) => {
     const value = parseNumberInput(e.target.value);
     state.gutfeelPercent = value || null;
+    state.gutfeelLastTyped = 'percent';
     
-    // Update $ from %
+    // Update $ from % (only when typing, not when R changes)
     if (value && state.fuelLitresYear && state.offRoadPercent !== null) {
       const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
       state.gutfeelDollars = (value / 100) * rebateShouldGet;
@@ -348,6 +362,42 @@ function updateOffRoadButtonStates() {
       btn.classList.remove('active');
     }
   });
+}
+
+// Update claim fields when R (rebate should get) changes
+// Last-typed field stays fixed, partner recalculates
+function updateClaimFieldsWhenRChanges() {
+  if (!state.fuelLitresYear || state.offRoadPercent === null) return;
+  
+  const rebateShouldGet = calculateRebateShouldGet(state.fuelLitresYear, state.offRoadPercent);
+  if (rebateShouldGet <= 0) return;
+  
+  const actualDollars = document.getElementById('actual-dollars');
+  const actualPercent = document.getElementById('actual-percent');
+  const gutfeelDollars = document.getElementById('gutfeel-dollars');
+  const gutfeelPercent = document.getElementById('gutfeel-percent');
+  
+  // Actual claim: recalculate the field that wasn't last typed
+  if (state.actualLastTyped === 'percent' && state.actualPercent !== null) {
+    // % was last typed, keep it fixed and recalculate $
+    state.actualDollars = (state.actualPercent / 100) * rebateShouldGet;
+    setFormattedValue(actualDollars, Math.round(state.actualDollars));
+  } else if (state.actualLastTyped === 'dollars' && state.actualDollars !== null) {
+    // $ was last typed, keep it fixed and recalculate %
+    state.actualPercent = (state.actualDollars / rebateShouldGet) * 100;
+    actualPercent.value = state.actualPercent.toFixed(1);
+  }
+  
+  // Gut feel: recalculate the field that wasn't last typed
+  if (state.gutfeelLastTyped === 'percent' && state.gutfeelPercent !== null) {
+    // % was last typed, keep it fixed and recalculate $
+    state.gutfeelDollars = (state.gutfeelPercent / 100) * rebateShouldGet;
+    setFormattedValue(gutfeelDollars, Math.round(state.gutfeelDollars));
+  } else if (state.gutfeelLastTyped === 'dollars' && state.gutfeelDollars !== null) {
+    // $ was last typed, keep it fixed and recalculate %
+    state.gutfeelPercent = (state.gutfeelDollars / rebateShouldGet) * 100;
+    gutfeelPercent.value = state.gutfeelPercent.toFixed(1);
+  }
 }
 
 // Admin fields

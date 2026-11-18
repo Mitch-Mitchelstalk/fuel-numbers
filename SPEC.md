@@ -35,11 +35,12 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 
 ### Section 2: Rebate
 - **Off-road %:** Input field with selectable percentage buttons (0%, 10%, 20%, ..., 100% in 10% increments) plus industry preset buttons (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%).
-- **Actual claim:** Two linked fields ($ per year ↔ % per year). Entering one automatically calculates the other based on the rebate they should be getting.
-- **Gut feel:** Two linked fields ($ per year ↔ % per year). Same linking behavior as actual claim.
+- **Actual claim:** Two linked fields ($ per year ↔ % per year). Last-typed wins: whichever field is most recently typed stays fixed when R (rebate should get) changes, and its partner recalculates. Meaning: % = share of R they HAVE claimed; $ = R × % / 100; % = $ / R × 100.
+- **Gut feel:** Two linked fields ($ per year ↔ % per year). Same last-typed-wins behavior as actual claim.
 - Both claim pairs are always visible and editable. Rebate missed is calculated separately for each.
-- **Section result:** Shows "Rebate they should be getting" calculated from total fuel litres (Section 1) and off-road %.
-- **Rebate missed:** Displays "Rebate missed: $X" under "Rebate they should be getting" with source label "(from actual claim)" or "(from gut feel)". Shows actual claim if filled, otherwise gut feel. Displayed in soft red. Hidden when no claim data available.
+- **Last-typed wins behavior:** Similar to diesel price in Section 1. When fuel use, diesel price, or off-road % changes (causing R to change), each claim pair's last-typed field stays fixed and the other recalculates. Example: gut % typed 90 → gut $ always = 90% of current R; if gut $ typed $20,000, then % recalculates when R changes to keep $ fixed at $20,000.
+- **Section result:** Shows "Rebate they should be getting" (R) calculated from total fuel litres (Section 1) and off-road %.
+- **Rebate missed:** Displays "Rebate missed: $X" under "Rebate they should be getting" with source label "(from actual claim)" or "(from gut feel)". Rebate missed = R - claimed $ (floored at 0). Shows actual claim if filled, otherwise gut feel. Displayed in soft red. Hidden when no claim data available.
 - **Note:** Rebate and theft calculations now use total fuel litres from Section 1 (D = L). On-site dispensed litres fields have been removed.
 
 ### Section 3: Admin & Operator Time

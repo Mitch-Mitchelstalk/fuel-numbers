@@ -2,6 +2,32 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.3.0] - 2026-11-18
+
+### Changed - Claim Fields "Last-Typed Wins" Behavior
+- **Claim field linking:** Implemented "last-typed wins" behavior for actual and gut feel claim pairs
+- **How it works:** The field most recently typed in each pair stays fixed when R (rebate should get) changes
+  - When fuel use, diesel price, or off-road % changes → R changes
+  - If % was last typed: % stays fixed, $ recalculates as R × % / 100
+  - If $ was last typed: $ stays fixed, % recalculates as $ / R × 100
+- **Example:** Gut feel % typed 90 → $ always = 90% of current R, even when R changes
+- **Example:** Actual $ typed $20,000 → % recalculates when R changes to keep $ at $20,000
+- **Similar to:** Diesel price behavior in Section 1 (last-entered type stays fixed)
+- **State tracking:** Added actualLastTyped and gutfeelLastTyped to track which field was last entered
+
+### Updated
+- **Rebate missed calculation:** Now uses floored subtraction: R - claimed $ (floored at 0)
+- **SPEC.md:** Documented last-typed wins behavior, claim field meanings (% = share of R claimed)
+
+### Testing
+- All 7 automated tests pass
+- Browser-verified:
+  - R = $24,221 (48,000 L/yr, 90% off-road)
+  - Gut feel % = 90 → $ = $21,799, missed = $2,422 ✓
+  - Change off-road to 85% (R → $23,443) → % stays 90, $ recalcs to $21,099 ✓
+  - Actual $ = $20,000 → % = 82.6% ✓
+  - Change off-road to 80% (R → $22,666) → $ stays $20,000, % recalcs to 88.2% ✓
+
 ## [1.2.9] - 2026-11-18
 
 ### Fixed - Linked Field Filling Regression
