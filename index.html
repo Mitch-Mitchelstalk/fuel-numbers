@@ -176,6 +176,38 @@
             </div>
           </div>
           
+          <div class="field-group">
+            <label>Admin cost</label>
+            <div class="field-row-horizontal">
+              <div class="field-col">
+                <label class="field-sublabel">per week</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="number" id="admin-dollars-week" class="form-input" placeholder="e.g., 35">
+                </div>
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per month</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="number" id="admin-dollars-month" class="form-input" placeholder="e.g., 152">
+                </div>
+              </div>
+              <div class="field-col">
+                <label class="field-sublabel">per year</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">$</span>
+                  <input type="number" id="admin-dollars-year" class="form-input" placeholder="e.g., 1820">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="reference-line">
+            <span class="reference-label">Admin cost:</span>
+            <span id="admin-cost-reference" class="reference-value">—</span>
+          </div>
+          
           <h3 class="subsection-title">Log-book time (optional)</h3>
           <div class="field-row">
             <div class="field-group">
@@ -183,8 +215,9 @@
               <input type="number" id="operator-minutes-per-dispense" class="form-input" placeholder="e.g., 2">
             </div>
             <div class="field-group">
-              <label>Dispenses per week</label>
+              <label>Dispenses per week <span id="dispenses-badge" class="estimate-badge">estimate</span></label>
               <input type="number" id="operator-dispenses-per-week" class="form-input" placeholder="e.g., 30">
+              <div class="field-note">(assumes 100 L per dispense)</div>
             </div>
             <div class="field-group">
               <label>Hourly rate <span id="operator-rate-badge" class="estimate-badge">estimate</span></label>

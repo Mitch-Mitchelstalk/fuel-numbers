@@ -43,8 +43,12 @@ const state = {
   // Operator (log-book time)
   operatorMinutesPerDispense: null,
   operatorDispensesPerWeek: null,
+  operatorDispensesModified: false, // Track if user has typed their own value
   operatorRate: RATES.defaultHourlyRate,
   operatorRateModified: false,
+  
+  // Admin dollars (linked to hours x rate)
+  adminDollarsLastSource: 'hours', // Track whether hours or dollars was last edited
   
   // Theft
   riskLevel: 'medium',
@@ -180,6 +184,14 @@ function updateFuelFieldsFromAnnual() {
   document.getElementById('fuel-dollars-week').value = Math.round(dollarsWeek);
   document.getElementById('fuel-dollars-month').value = Math.round(dollarsMonth);
   document.getElementById('fuel-dollars-year').value = Math.round(dollarsYear);
+  
+  // Update dispenses default if not modified by user
+  if (!state.operatorDispensesModified && state.fuelLitresYear) {
+    const litresPerWeek = state.fuelLitresYear / 52;
+    const dispensesPerWeek = Math.round(litresPerWeek / 100); // Assumes 100 L per dispense
+    state.operatorDispensesPerWeek = dispensesPerWeek;
+    document.getElementById('operator-dispenses-per-week').value = dispensesPerWeek;
+  }
 }
 
 // Rebate fields (off-road %, actual claim, gut feel)
@@ -298,31 +310,44 @@ function setupAdminFields() {
   const adminWeek = document.getElementById('admin-hours-week');
   const adminMonth = document.getElementById('admin-hours-month');
   const adminRate = document.getElementById('admin-rate');
+  const adminDollarsWeek = document.getElementById('admin-dollars-week');
+  const adminDollarsMonth = document.getElementById('admin-dollars-month');
+  const adminDollarsYear = document.getElementById('admin-dollars-year');
   
+  // Hours per week
   adminWeek.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     if (value) {
       state.adminHoursYear = value * 52;
+      state.adminDollarsLastSource = 'hours';
     } else {
       state.adminHoursYear = null;
     }
+    updateAdminDollarsFromHours();
     updateAllCalculations();
   });
   
+  // Hours per month
   adminMonth.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     if (value) {
       state.adminHoursYear = value * 12;
+      state.adminDollarsLastSource = 'hours';
     } else {
       state.adminHoursYear = null;
     }
+    updateAdminDollarsFromHours();
     updateAllCalculations();
   });
   
+  // Hourly rate
   adminRate.addEventListener('input', (e) => {
     state.adminRate = parseFloat(e.target.value) || RATES.defaultHourlyRate;
     state.adminRateModified = true;
     document.getElementById('admin-rate-badge').style.display = 'none';
+    if (state.adminDollarsLastSource === 'hours') {
+      updateAdminDollarsFromHours();
+    }
     updateAllCalculations();
   });
   
@@ -334,9 +359,97 @@ function setupAdminFields() {
       adminRate.value = value;
       state.adminRateModified = true;
       document.getElementById('admin-rate-badge').style.display = 'none';
+      if (state.adminDollarsLastSource === 'hours') {
+        updateAdminDollarsFromHours();
+      }
       updateAllCalculations();
     });
   });
+  
+  // $ per week
+  adminDollarsWeek.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    if (value) {
+      state.adminDollarsLastSource = 'dollars';
+      const dollarsYear = value * 52;
+      
+      // Update other $ fields
+      adminDollarsMonth.value = Math.round(dollarsYear / 12);
+      adminDollarsYear.value = Math.round(dollarsYear);
+      
+      // Back-calculate hours from rate
+      if (state.adminRate > 0) {
+        state.adminHoursYear = dollarsYear / state.adminRate;
+        const hoursWeek = state.adminHoursYear / 52;
+        const hoursMonth = state.adminHoursYear / 12;
+        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
+        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+      }
+      
+      updateAllCalculations();
+    }
+  });
+  
+  // $ per month
+  adminDollarsMonth.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    if (value) {
+      state.adminDollarsLastSource = 'dollars';
+      const dollarsYear = value * 12;
+      
+      // Update other $ fields
+      adminDollarsWeek.value = Math.round(dollarsYear / 52);
+      adminDollarsYear.value = Math.round(dollarsYear);
+      
+      // Back-calculate hours from rate
+      if (state.adminRate > 0) {
+        state.adminHoursYear = dollarsYear / state.adminRate;
+        const hoursWeek = state.adminHoursYear / 52;
+        const hoursMonth = state.adminHoursYear / 12;
+        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
+        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+      }
+      
+      updateAllCalculations();
+    }
+  });
+  
+  // $ per year
+  adminDollarsYear.addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    if (value) {
+      state.adminDollarsLastSource = 'dollars';
+      const dollarsYear = value;
+      
+      // Update other $ fields
+      adminDollarsWeek.value = Math.round(dollarsYear / 52);
+      adminDollarsMonth.value = Math.round(dollarsYear / 12);
+      
+      // Back-calculate hours from rate
+      if (state.adminRate > 0) {
+        state.adminHoursYear = dollarsYear / state.adminRate;
+        const hoursWeek = state.adminHoursYear / 52;
+        const hoursMonth = state.adminHoursYear / 12;
+        adminWeek.value = (Math.round(hoursWeek * 10) / 10).toString();
+        adminMonth.value = (Math.round(hoursMonth * 10) / 10).toString();
+      }
+      
+      updateAllCalculations();
+    }
+  });
+}
+
+// Update admin $ fields from hours × rate
+function updateAdminDollarsFromHours() {
+  if (!state.adminHoursYear || state.adminRate <= 0) return;
+  
+  const dollarsYear = state.adminHoursYear * state.adminRate;
+  const dollarsWeek = dollarsYear / 52;
+  const dollarsMonth = dollarsYear / 12;
+  
+  document.getElementById('admin-dollars-week').value = Math.round(dollarsWeek);
+  document.getElementById('admin-dollars-month').value = Math.round(dollarsMonth);
+  document.getElementById('admin-dollars-year').value = Math.round(dollarsYear);
 }
 
 // Operator fields
@@ -354,6 +467,8 @@ function setupOperatorFields() {
   operatorDispenses.addEventListener('input', (e) => {
     const value = parseFloat(e.target.value);
     state.operatorDispensesPerWeek = value || null;
+    state.operatorDispensesModified = true; // User has typed their own value
+    document.getElementById('dispenses-badge').style.display = 'none';
     updateAllCalculations();
   });
   
@@ -419,6 +534,8 @@ function updateSectionResults() {
   // Section 3: Admin
   const adminEl = document.getElementById('result-admin');
   const adminHoursNote = document.getElementById('admin-hours-note');
+  const adminCostReference = document.getElementById('admin-cost-reference');
+  
   if (state.adminHoursYear) {
     const cost = Math.round(state.adminHoursYear * state.adminRate);
     adminEl.textContent = formatCurrency(cost);
@@ -428,9 +545,14 @@ function updateSectionResults() {
     const rounded = Math.round(hoursPerMonth * 10) / 10;
     const formatted = rounded % 1 === 0 ? Math.round(rounded) : rounded;
     adminHoursNote.textContent = `· ${formatted} hrs per month`;
+    
+    // Update reference line in Section 3
+    const costPerMonth = Math.round(cost / 12);
+    adminCostReference.textContent = `${formatCurrency(costPerMonth)} per month`;
   } else {
     adminEl.textContent = '—';
     adminHoursNote.textContent = '';
+    adminCostReference.textContent = '—';
   }
   
   const operatorLine = document.getElementById('result-operator-line');

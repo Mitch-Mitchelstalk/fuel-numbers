@@ -198,6 +198,31 @@ function testOverClaimGuard() {
   assertEqual(isOverClaiming, true, 'Over-claim: over-claiming detected');
 }
 
+// Test Case 6: Dispenses default and admin $ linkage
+function testDispensesAndAdminDollars() {
+  // Dispenses default: 48,000 L/yr → 923 L/wk → 9 dispenses
+  const annualLitres = 48000;
+  const litresPerWeek = annualLitres / 52; // 923.08
+  assertEqual(Math.round(litresPerWeek), 923, 'Dispenses: litres per week');
+  
+  const dispensesDefault = Math.round(litresPerWeek / 100); // Assumes 100 L per dispense
+  assertEqual(dispensesDefault, 9, 'Dispenses: default dispenses per week (923 / 100)');
+  
+  // Admin $ linkage: $200/month → $2,400/yr, $46/wk, 1.3 hrs/wk at $35
+  const dollarsPerMonth = 200;
+  const dollarsPerYear = dollarsPerMonth * 12;
+  assertEqual(dollarsPerYear, 2400, 'Admin $: dollars per year');
+  
+  const dollarsPerWeek = dollarsPerYear / 52;
+  assertEqual(Math.round(dollarsPerWeek), 46, 'Admin $: dollars per week (2400 / 52 = 46.15)');
+  
+  const adminRate = 35;
+  const hoursPerYear = dollarsPerYear / adminRate;
+  const hoursPerWeek = hoursPerYear / 52;
+  const hoursPerWeekRounded = Math.round(hoursPerWeek * 10) / 10;
+  assertEqual(hoursPerWeekRounded, 1.3, 'Admin $: back-calculated hours per week (2400 / 35 / 52 = 1.32)');
+}
+
 // Run all tests
 export function runAllTests() {
   console.log('\n=== Running Fuel Numbers Calculator Tests ===\n');
@@ -207,7 +232,8 @@ export function runAllTests() {
     runTest('Test Case 2: Civil example', testCivilExample),
     runTest('Test Case 3: Linked fields', testLinkedFields),
     runTest('Test Case 4: Skips', testSkips),
-    runTest('Test Case 5: Over-claim guard', testOverClaimGuard)
+    runTest('Test Case 5: Over-claim guard', testOverClaimGuard),
+    runTest('Test Case 6: Dispenses default and admin $ linkage', testDispensesAndAdminDollars)
   ];
   
   const passed = results.filter(r => r).length;

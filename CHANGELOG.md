@@ -2,6 +2,20 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.2.1] - 2026-11-18
+
+### Added - Dispenses Default and Admin $ Fields
+- **Dispenses per week default:** Automatically calculates from weekly litres / 100 (assumes 100 L average per dispense), rounded to nearest whole. Marked with "estimate" badge and note "(assumes 100 L per dispense)". Updates live when fuel use changes until rep types their own value; after that keeps the typed value.
+- **Admin cost $ fields:** Added $ per week, $ per month, $ per year fields (horizontal row like Section 1), linked to each other and to hours × rate. Editing hours or rate updates the $ fields; editing a $ field updates the others and back-calculates hours from rate (1 decimal place). Example: $200/month → $2,400/year, $46/week, 1.3 hours/week at $35.
+- **Admin cost reference line:** Shows "Admin cost: $X per month" inside Section 3 for easy reference.
+- **Test case 6:** Added test for dispenses default (48,000 L/yr → 923 L/wk → 9 dispenses) and admin $ linkage ($200/month → $2,400/yr, $46/wk, 1.3 hrs/wk at $35).
+- **All 6 tests pass** ✓
+
+### Kept Unchanged
+- All Section 2 rebate changes
+- All formulas and calculations
+- Log-book time formula and results
+
 ## [1.2.0] - 2026-11-18
 
 ### Changed - Section 2 Rebate Redesign

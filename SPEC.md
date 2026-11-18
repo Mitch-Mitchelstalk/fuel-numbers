@@ -43,7 +43,9 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 
 ### Section 3: Admin & Operator Time
 - **Admin time:** Hours per week and per month (linked), hourly rate with presets ($35, $52, $75). Default $52 with "estimate" label until edited.
-- **Log-book time (optional):** Minutes per dispense (filling in the log book), dispenses per week, hourly rate with presets ($35, $40, $52). Blank counts as $0.
+- **Admin cost $ fields:** $ per week, $ per month, $ per year (horizontal row like Section 1), linked to each other and to hours × rate. Editing hours or rate updates the $ fields; editing a $ field updates the others and back-calculates hours from rate (1 decimal place).
+- **Admin cost reference line:** Shows "Admin cost: $X per month" inside Section 3.
+- **Log-book time (optional):** Minutes per dispense (filling in the log book), dispenses per week (defaults to weekly litres / 100, rounded, with "estimate" badge and note "(assumes 100 L per dispense)"; updates live when fuel changes until rep types their own value), hourly rate with presets ($35, $40, $52). Blank counts as $0.
 - **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
@@ -106,6 +108,7 @@ L = annual litres used (total fuel from Section 1). D = L (dispensed litres remo
 3. **Linked fields.** Enter $8,880/month at $2.22/L: converts to 4,000 L/month, 48,000 L/year, 923 L/week, plus $106,560/year and $2,049/week. Change price to $2.50/L with $ last typed: $ values stay unchanged (8,880, 106,560, 2,049), litres recalculate to 3,552 L/month, 42,624 L/year, 820 L/week.
 4. **Skips.** Skipping every supporting step (admin, operator, theft, claims) still gives the core results (rebate only). Off-road must then be entered by hand. Choosing an industry preset button pre-fills the off-road %.
 5. **Over-claim guard.** Farm example with actual claim $30,000: missed shows $0 with warning "Over-claiming; check the figures."
+6. **Dispenses default and admin $ linkage.** 48,000 L/year → 923 L/week → 9 dispenses per week (default, assumes 100 L per dispense). Admin $ linkage: $200/month → $2,400/year, $46/week, 1.3 hours/week at $35 (back-calculated).
 
 ## Build and done
 - Repo, hosting and link visibility follow the approved review pack: a private GitHub repo (Mitch-Mitchelstalk/fuel-numbers) deployed on Netlify Free, unlisted and noindex.
