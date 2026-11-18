@@ -2,6 +2,33 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.3.1] - 2026-11-18
+
+### Changed - Default Diesel Price
+- **Default diesel price:** Changed from $2.22/L to $2.50/L
+- **Still marked "estimate"** until user edits it
+- **Rationale:** More realistic current market price
+- **Updated:**
+  - calculator.js: RATES.defaultDiesel = 2.50
+  - index.html: diesel-price input value = 2.50
+  - calculator.test.js: Farm example test updated for new theft calculation
+    * Theft at $2.50: 48,000 L × 1% × $2.50 = $1,200 (was $1,066 at $2.22)
+    * Total savings updated accordingly in all scenarios
+  - SPEC.md: All worked examples updated to show diesel price used
+    * Farm example now states "$2.50/L (default)" in inputs
+    * Theft calculation shown: "48,000 L × 1% × $2.50"
+    * All total savings recalculated with new theft amounts
+    * Linked fields example updated to use $2.50 default
+
+### Testing
+- All 7 test cases pass with updated values
+- Farm example (with $2.50 default):
+  - Theft: $1,200 (was $1,066)
+  - Claims blank total: $3,020 (was $2,886)
+  - Gut feel 80% total: $7,864 (was $7,730)
+  - Actual $20,000 total: $7,241 (was $7,107)
+- Civil example unchanged (uses explicit $2.60/L)
+
 ## [1.3.0] - 2026-11-18
 
 ### Changed - Claim Fields "Last-Typed Wins" Behavior

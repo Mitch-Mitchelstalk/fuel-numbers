@@ -78,10 +78,10 @@ All results update automatically as inputs change. No navigation buttons, no pro
 ## Six linked fuel-usage fields
 Litres per week, month and year, and dollars per week, month and year. Typing in any one fills the other five.
 - 1 year = 52 weeks = 12 months. For annual litres L: week = L ÷ 52, month = L ÷ 12.
-- $ = litres × diesel price. The diesel price defaults to $2.22/L and is editable.
+- $ = litres × diesel price. The diesel price defaults to $2.50/L (marked "estimate") and is editable.
 - When the price changes, whichever field type (litres or dollars) was last entered stays fixed and the other type recalculates from it. If litres were last typed, litres stay and $ update. If $ were last typed, $ stay and litres update.
 - Show litres and $ to whole numbers. Keep full precision internally.
-- Example: $8,880/month at $2.22/L = 4,000 L/month = 48,000 L/year = 923 L/week. At $2.22/L that's $106,560/year and $2,049/week.
+- Example: 48,000 L/year at $2.50/L = 4,000 L/month = 923 L/week. At $2.50/L that's $120,000/year, $10,000/month, and $2,308/week.
 
 ## Formulas (annual)
 L = annual litres used (total fuel from Section 1). D = L (dispensed litres removed). R = rebate they should be getting (rounded to whole dollars).
@@ -98,22 +98,22 @@ L = annual litres used (total fuel from Section 1). D = L (dispensed litres remo
 - **Fuel tax credit rates** (ATO, fuel acquired from 3 Aug 2026; Mitch chose these 18 Nov 2026): off-road (all other business uses) **53.7¢/L**; heavy vehicles on public roads **21.3¢/L**.
   - Rates are indexed each February and August (next: Feb 2027). Before each build, check ato.gov.au for the current published rates and show Mitch any difference. Don't change a rate without his yes.
   - Show "ATO rates for fuel acquired from 3 Aug 2026" under the rebate result.
-- **Diesel:** $2.22/L. **Hourly rate (admin and operator):** $52 (presets $35, $52 and $75). **Theft by risk level:** 1%, 3% and 6%.
+- **Diesel:** $2.50/L (marked "estimate"). **Hourly rate (admin and operator):** $52 (presets $35, $52 and $75). **Theft by risk level:** 1%, 3% and 6%.
 - **Off-road pre-fill by industry (step A):** civil 80%, agriculture 90%, transport 5%, asphalt 75%.
 
 ## Worked test cases (must pass)
 1. **Farm example.**
-   - Inputs: use 4,000 L/month (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (1%), $2.22/L.
-   - Results: rebate they should be getting $24,221; admin $1,820; theft $1,066.
-   - Claims blank: **total potential savings $2,886** (rebate missed $0).
-   - Gut feel 80%: getting now $19,377 (80%), missed $4,844; **total $7,730**.
-   - Actual $20,000: getting now 82.6%, missed $4,221; **total $7,107**.
-   - Both actual and gut feel filled: **total uses actual ($7,107)** not gut feel.
+   - Inputs: use 4,000 L/month (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (1%), $2.50/L (default).
+   - Results: rebate they should be getting $24,221; admin $1,820; theft $1,200 (48,000 L × 1% × $2.50).
+   - Claims blank: **total potential savings $3,020** ($0 + $1,820 + $0 + $1,200).
+   - Gut feel 80%: getting now $19,377 (80%), missed $4,844; **total $7,864** ($4,844 + $1,820 + $1,200).
+   - Actual $20,000: getting now 82.6%, missed $4,221; **total $7,241** ($4,221 + $1,820 + $1,200).
+   - Both actual and gut feel filled: **total uses actual ($7,241)** not gut feel.
 2. **Civil example.**
    - Inputs: use 10,000 L/month (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut feel 80%.
    - Results: rebate they should be getting $56,664; gut feel getting now $45,331 (80%), missed $11,333; admin $4,992 (8 hrs per month); theft $9,360; **total potential savings $25,685**.
    - Add log-book time 2 min per dispense, 30 dispenses per week at $40/hr: 52 hrs/year, log-book $2,080 (4.3 hrs per month); **total $27,765**.
-3. **Linked fields.** Enter $8,880/month at $2.22/L: converts to 4,000 L/month, 48,000 L/year, 923 L/week, plus $106,560/year and $2,049/week. Change price to $2.50/L with $ last typed: $ values stay unchanged (8,880, 106,560, 2,049), litres recalculate to 3,552 L/month, 42,624 L/year, 820 L/week.
+3. **Linked fields.** Enter 48,000 L/year at $2.50/L (default): converts to 4,000 L/month, 923 L/week, plus $120,000/year, $10,000/month, and $2,308/week. Change price to $2.60/L with litres last typed: litres stay unchanged (923, 4,000, 48,000), $ values recalculate to $2,400/week, $10,400/month, $124,800/year.
 4. **Skips.** Skipping every supporting step (admin, operator, theft, claims) still gives the core results (rebate only). Off-road must then be entered by hand. Choosing an industry preset button pre-fills the off-road %.
 5. **Over-claim guard.** Farm example with actual claim $30,000: missed shows $0 with warning "Over-claiming; check the figures."
 6. **Dispenses default and admin $ linkage.** 48,000 L/year → 923 L/week → 9 dispenses per week (default, assumes 100 L per dispense). Admin $ linkage: $200/month → $2,400/year, $46/week, 1.3 hours/week at $35 (back-calculated).

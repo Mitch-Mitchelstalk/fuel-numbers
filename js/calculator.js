@@ -7,7 +7,7 @@
 export const RATES = {
   offRoad: 0.537,        // 53.7¢/L
   onRoad: 0.213,         // 21.3¢/L
-  defaultDiesel: 2.22,   // $/L
+  defaultDiesel: 2.50,   // $/L
   defaultHourlyRate: 52, // $/hour
   hourlyRatePresets: [35, 52, 75],
   theft: {
