@@ -2,6 +2,47 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.3] - 2026-11-18
+
+### Removed - Risk Level Radio Buttons
+
+**Section 4: Simplified Theft Input**
+- ✅ **Removed Low/Medium/High risk radio cards** entirely
+- ✅ **Kept only direct theft % input** (default 0.6%, ESTIMATE badge)
+- ✅ **Kept 8 preset buttons** (0, 0.2, 0.4, 0.6, 0.8, 1, 3, 6)
+- ✅ **Active button highlighted** in amber
+
+**Rationale:**
+- Risk radio buttons were redundant with preset buttons
+- Direct % input is clearer and more flexible
+- Preset buttons provide common scenarios without extra UI
+- Simpler, cleaner interface
+
+**Removed:**
+- Risk level radio buttons (Low 1%, Medium 3%, High 6%)
+- Risk level state tracking
+- Risk radio button event handlers
+
+**Unchanged:**
+- Theft % calculation (total fuel × theft % × diesel price)
+- Default 0.6%
+- ESTIMATE badge behavior
+- Preset button active state highlighting
+- All 8 preset buttons
+
+### Code Changes
+- **HTML:** Removed entire risk level radio button group
+- **JS state:** Removed `riskLevel: 'low'`
+- **JS setupTheftFields():** Removed risk radio event handlers
+- **No CSS changes needed:** Radio button styles remain for other sections
+
+### Testing
+- All 7 automated tests pass ✓
+- Theft calculation unchanged ✓
+
+### Updated
+- **SPEC.md:** Section 4 now shows only theft % input and preset buttons
+
 ## [1.6.2] - 2026-11-18
 
 ### Changed - Granular Theft Risk Presets

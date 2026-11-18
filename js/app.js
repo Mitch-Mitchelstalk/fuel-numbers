@@ -55,7 +55,6 @@ const state = {
   adminDollarsLastSource: 'hours', // Track whether hours or dollars was last edited
   
   // Theft
-  riskLevel: 'low',
   theftPercent: 0.6, // Default 0.6% (ESTIMATE)
   theftModified: false // Track if user has edited theft %
 };
@@ -671,19 +670,8 @@ function setupOperatorFields() {
 
 // Theft fields
 function setupTheftFields() {
-  const riskRadios = document.querySelectorAll('input[name="risk"]');
   const theftPercent = document.getElementById('theft-percent');
   const theftBadge = document.getElementById('theft-badge');
-  
-  riskRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      state.riskLevel = e.target.value;
-      state.theftPercent = RATES.theft[e.target.value] * 100;
-      theftPercent.value = state.theftPercent;
-      updateTheftButtonStates();
-      updateAllCalculations();
-    });
-  });
   
   theftPercent.addEventListener('input', (e) => {
     state.theftPercent = parseNumberInput(e.target.value) || 0;
