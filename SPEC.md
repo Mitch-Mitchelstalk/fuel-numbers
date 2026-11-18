@@ -23,57 +23,45 @@ This skill is the source of truth for the app. Fuel Numbers owns it (Mitch, 18 N
 - No hardware price, subscription price, quote, payback or multi-year figure anywhere.
 - Every default is shown on screen and can be edited. A default is labelled "estimate" until the salesperson changes it.
 
-## The call flow
-Mitch's four questions (18 Nov 2026) are the backbone. They're marked **required** and stay in his order. Supporting screens are optional: the salesperson can skip them, and skipping only drops a default or a talking point. Each screen shows the question to ask, the input, and a short "say this" note for the rep. A progress bar shows the four core steps.
+## The calculator layout (updated 18 Nov 2026)
+Single-page desktop calculator with live calculations. All inputs grouped into 4 numbered sections down the page, with results updating as you type. A sticky results panel on the right shows the complete savings breakdown.
 
-### Supporting (optional): opening
-- **A. About them.** "What do you do, and whereabouts?"
-  - Industry: Civil construction, Agriculture, Transport, Asphalt and road surfacing, Other.
-  - The industry only pre-fills the off-road % in Core 2b, labelled "estimate": civil 80%, agriculture 90%, transport 5%, asphalt 75%. "Other" leaves it blank.
-- **B. What they want to solve.** "What's the main problem you're trying to solve?"
-  - Tick any of: rebate records, theft or security, admin time, job costing, tank visibility.
-  - Ticked items are listed first on the results screen.
-- **C. Who fills.** "Who fills up: just you, your team, or contractors too?"
-  - Pre-selects the risk in Core 4: just me → low; team → medium; contractors → medium. The salesperson confirms it.
+### Section 1: Fuel Use
+Six linked input fields (litres and dollars, per week/month/year) that automatically update when any one is changed. Diesel price field with "estimate" label until edited, defaults to $2.22/L.
 
-### Core (required, in Mitch's order)
-1. **Fuel use (litres).** "Roughly how much diesel do you go through: a week, a month or a year?"
-   - Use the six linked fields below. **Litres per year** is the headline figure.
-   - If the litres figure looks like a dollar amount, show a check line: "Is that litres or dollars?"
-2. **Rebate they should be getting.**
-   - (a) "How much of that do you dispense yourselves, from your own tanks, pods or trailers?" Enter the on-site dispensed litres in the same week/month/year units. The field starts equal to total use, labelled "estimate". If it's more than total use, show a warning.
-   - Under-recording reminder (always shown under 2a, for the rep): "If they quote litres from their own records, check them against litres bought. Records are often missing fills, so the bought figure can be the truer one."
-   - (b) "Roughly what % goes into off-road gear (plant, tractors, gensets) versus registered vehicles on the road?" Enter the off-road %, with quick picks at 0, 25, 50, 75 and 100. Pre-filled from step A if an industry was chosen; otherwise blank and must be entered.
-   - Result: **rebate they should be getting a year**, the full entitlement on dispensed litres. This is the headline figure of the whole app.
-   - (c) **What they're getting now.** "How much are you claiming now, roughly? Or what's your gut feel on how much of that you're getting?" The rep picks one input mode:
-     - **$ a year** claimed now; or
-     - **gut-feel %** of the full entitlement, with quick picks at 25, 50, 75 and 100.
-     - Left blank: no comparison is shown and rebate being missed counts as $0.
-   - Result: **rebate being missed a year** (see formulas). Say this: "That gap is money left on the table each year."
-3. **Admin time.** "How many hours a week or a month go on reconciling fuel, transferring logbook data and supervising contractors' fuel use?"
-   - Hours, with a per week / per month toggle.
-   - Hourly rate: presets regional $35, metro $52 and high-cost metro $75. The default is $52, labelled "estimate", and it's editable.
-   - **Operator time** (optional sub-question on the same step): "How long do operators spend filling in fuel forms or logbooks at each refill, in total hours a week or a month?" Hours with its own per week / per month toggle, and its own hourly rate (same presets, default $52 "estimate"). Blank counts as $0.
-4. **Contractor fuel risk.** "What interaction do contractors have with your fuel?"
-   - **Low:** locked up, or staff only. Theft 1%.
-   - **Medium:** some contractor access, mixed controls. Theft 3%.
-   - **High:** open access, remote, little oversight. Theft 6%.
-   - Default medium, or as pre-selected in step C. The theft % stays editable. Don't mention siphoning anywhere: an FMS doesn't stop it.
+### Section 2: Rebate
+- **On-site dispensed litres:** Three fields (week/month/year), pre-filled from total fuel use with "estimate" labels until edited.
+- **Under-recording reminder:** Helper text shown below dispensed fields: "If they quote litres from their own records, check against litres bought - records often miss fills."
+- **Dispensed > total warning:** Shows when dispensed exceeds total fuel use.
+- **Off-road %:** Input field with quick picks (0%, 25%, 50%, 75%, 100%) and optional industry preset dropdown (Civil 80%, Agriculture 90%, Transport 5%, Asphalt 75%). Shows "estimate" label if set via industry preset.
+- **What they're getting now:** Dropdown with three modes:
+  - Leave blank (no comparison)
+  - $ per year claimed now
+  - Gut-feel % of entitlement (with quick picks 25%, 50%, 75%, 100%)
+- **Section result:** Shows "Rebate they should be getting" calculated from dispensed litres and off-road %.
 
-### Supporting (optional): close
-- **D. Findings so far.** A one-screen summary of the core answers in plain words, so the rep can read it back and the lead can correct anything.
-- **E. Results and talking points.**
-  - Show, in this order:
-    1. rebate they should be getting a year (headline, largest);
-    2. what they're getting now and rebate being missed (if 2c was filled);
-    3. admin cost a year;
-    4. operator time cost a year (if entered);
-    5. theft exposure a year;
-    6. **total potential savings a year**.
-  - Under the rebate, show the rate period and source.
-  - Talking points:
-    - Step B's ticked items come first.
-    - At under 10,000 L a month dispensed: "At this volume the main win is clean rebate records and less admin, more than big dollar savings."
+### Section 3: Admin & Operator Time
+- **Admin time:** Hours per week and per month (linked), hourly rate with presets ($35, $52, $75). Default $52 with "estimate" label until edited.
+- **Operator time (optional):** Same structure as admin - hours per week/month, hourly rate with presets. Blank counts as $0.
+- **Section result:** Shows admin cost per year, and operator time cost per year (if entered).
+
+### Section 4: Theft Risk
+- **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default medium.
+- **Theft % (editable):** Updates automatically with risk level but remains editable.
+- **Section result:** Shows theft exposure per year.
+
+### Results Panel (sticky right column)
+Always visible, shows all calculated values updating live:
+1. Rebate they should be getting (headline, per year)
+2. What they're getting now (if claim mode selected)
+3. Rebate being missed (if claim mode selected, with over-claim warning if applicable)
+4. Admin cost per year
+5. Operator time cost per year (if entered)
+6. Theft exposure per year
+7. **Total potential savings per year** (highlighted)
+8. ATO rate source line at bottom
+
+All results update automatically as inputs change. No navigation buttons, no progress bar, no separate screens.
 
 ## Six linked fuel-usage fields
 Litres per week, month and year, and dollars per week, month and year. Typing in any one fills the other five.

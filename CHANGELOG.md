@@ -2,6 +2,31 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.1.0] - 2026-11-18
+
+### Changed - Complete UI Redesign
+- **BREAKING:** Redesigned from mobile-first step-by-step to desktop-first single-page calculator
+- Removed all navigation: no next/back buttons, no skip buttons, no progress bar
+- Removed all sales script content: no questions-to-ask, no "say this" notes, no talking points
+- Removed supporting steps (About them, What they want to solve, Who fills, Findings)
+- All inputs now on one page in 4 numbered sections with live calculation updates
+- Desktop-first layout (1280-1920px comfortable width) with sticky results panel on right
+- Results update automatically as you type - no need to click anything
+- Clean, professional calculator interface
+- Each section shows its own intermediate results
+- Industry preset dropdown remains as optional helper next to off-road %
+- Keep all calculation logic, formulas, rates, and test cases exactly as before
+
+### Kept Unchanged
+- All 6 test cases pass with exact dollar values
+- calculator.js module (formulas, rates, all calculations)
+- "estimate" badges on defaults until edited
+- Warnings (dispensed > total, over-claim $0 note)
+- Under-recording reminder (as short helper text)
+- noindex meta tag and robots.txt
+- No customer data anywhere
+- ATO rates (3 Aug 2026): off-road 53.7¢/L, on-road 21.3¢/L
+
 ## [1.0.0] - 2026-11-17
 
 ### Added
