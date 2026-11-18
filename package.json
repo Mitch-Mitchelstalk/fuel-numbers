@@ -14,5 +14,8 @@
   ],
   "author": "Fuellox",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "puppeteer": "^25.18.1"
+  }
 }
