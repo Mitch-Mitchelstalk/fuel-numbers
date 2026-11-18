@@ -56,7 +56,7 @@ const state = {
   
   // Theft
   riskLevel: 'low',
-  theftPercent: RATES.theft.low * 100, // Default 1% (ESTIMATE)
+  theftPercent: 0.6, // Default 0.6% (ESTIMATE)
   theftModified: false // Track if user has edited theft %
 };
 

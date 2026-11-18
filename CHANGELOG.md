@@ -2,6 +2,45 @@
 
 All notable changes to Fuel Numbers will be documented in this file.
 
+## [1.6.2] - 2026-11-18
+
+### Changed - Granular Theft Risk Presets
+
+**Theft Risk: More Granular Options**
+- ✅ **Added 0.2%, 0.4%, 0.6%, 0.8% presets** alongside existing 0%, 1%, 3%, 6%
+- ✅ **8 theft % quick-pick buttons total** (was 4): 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6%
+- ✅ **Default changed to 0.6%** (from 1%) - more conservative baseline
+- ✅ **Theft input accepts decimals** (step 0.1)
+
+**Rationale:**
+- More granular control for low-theft scenarios
+- 0.6% is a more conservative default than 1%
+- Rep can fine-tune theft risk in 0.2% increments
+- Common scenarios: 0% (secure), 0.2-0.8% (low risk), 1% (standard low), 3-6% (higher risk)
+
+**Farm Example Updated:**
+- 48,000 L/year × 0.6% theft × $2.50/L = **$720** theft exposure (was $1,200 at 1%)
+- Total potential savings (blank claims): **$2,540** (was $3,020)
+- Gut feel 80%: **$7,384** (was $7,864)
+- Actual $20,000: **$6,761** (was $7,241)
+
+### Code Changes
+- **HTML:** 
+  - Theft % input default value: "0.6" (from "1")
+  - Added 4 new quick-pick buttons: 0.2%, 0.4%, 0.6%, 0.8%
+  - Input already had step="0.1" (accepts decimals)
+- **JS state:** 
+  - `theftPercent: 0.6` (from `RATES.theft.low * 100`)
+
+### Testing
+- All 7 automated tests pass ✓
+- Tests use explicit theft % values, not defaults
+
+### Updated
+- **SPEC.md:** 
+  - Section 4: Default 0.6%, 8 buttons, accepts decimals
+  - Farm example: Updated all totals with $720 theft (0.6%)
+
 ## [1.6.1] - 2026-11-18
 
 ### Fixed - Total Always Visible at Page Load

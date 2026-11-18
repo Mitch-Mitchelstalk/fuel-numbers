@@ -63,9 +63,9 @@ Typing in any one fills the other five. Diesel price ($/L) is the conversion rat
 - **Section result:** Shows admin cost per year (with hours per month subtitle) and log-book time cost per year (if entered, with hours per month subtitle).
 
 ### Section 4: Theft Risk
-- **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default low (1%, marked ESTIMATE).
-- **Theft % (editable):** Updates automatically with risk level but remains editable. Default 1% (marked ESTIMATE). ESTIMATE badge disappears when user edits field or clicks quick-pick button.
-- **Quick-pick buttons:** 0%, 1%, 3%, 6% for common theft scenarios. Selecting 0% gives $0 theft exposure.
+- **Risk level:** Radio buttons for Low (1%), Medium (3%), High (6%). Default low (0.6%, marked ESTIMATE).
+- **Theft % (editable):** Updates automatically with risk level but remains editable. Default 0.6% (marked ESTIMATE). Accepts decimals (step 0.1). ESTIMATE badge disappears when user edits field or clicks quick-pick button.
+- **Quick-pick buttons:** 0%, 0.2%, 0.4%, 0.6%, 0.8%, 1%, 3%, 6% for granular theft scenarios. Selecting 0% gives $0 theft exposure.
 - **Section result:** Shows theft exposure per year (total fuel × theft % × diesel price).
 
 ### Results Panel (sticky right column)
@@ -116,12 +116,12 @@ L = annual litres used (total fuel from Section 1). D = L (dispensed litres remo
 
 ## Worked test cases (must pass)
 1. **Farm example.**
-   - Inputs: use 4,000 L/month (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (1%), $2.50/L (default).
-   - Results: rebate they should be getting $24,221; admin $1,820; theft $1,200 (48,000 L × 1% × $2.50).
-   - Claims blank: **total potential savings $3,020** ($0 + $1,820 + $0 + $1,200).
-   - Gut feel 80%: getting now $19,377 (80%), missed $4,844; **total $7,864** ($4,844 + $1,820 + $1,200).
-   - Actual $20,000: getting now 82.6%, missed $4,221; **total $7,241** ($4,221 + $1,820 + $1,200).
-   - Both actual and gut feel filled: **total uses actual ($7,241)** not gut feel.
+   - Inputs: use 4,000 L/month (48,000 L/year); off-road 90%; admin 1 hour/week at $35; no operator time; low risk (0.6% default), $2.50/L (default).
+   - Results: rebate they should be getting $24,221; admin $1,820; theft $720 (48,000 L × 0.6% × $2.50).
+   - Claims blank: **total potential savings $2,540** ($0 + $1,820 + $0 + $720).
+   - Gut feel 80%: getting now $19,377 (80%), missed $4,844; **total $7,384** ($4,844 + $1,820 + $720).
+   - Actual $20,000: getting now 82.6%, missed $4,221; **total $6,761** ($4,221 + $1,820 + $720).
+   - Both actual and gut feel filled: **total uses actual ($6,761)** not gut feel.
 2. **Civil example.**
    - Inputs: use 10,000 L/month (120,000 L/year); off-road 80%; admin 8 hours/month at $52; medium risk (3%), $2.60/L; gut feel 80%.
    - Results: rebate they should be getting $56,664; gut feel getting now $45,331 (80%), missed $11,333; admin $4,992 (8 hrs per month); theft $9,360; **total potential savings $25,685**.
